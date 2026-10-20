@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Sathi — ڈیجیٹل ساتھی | تصدیق شدہ ایپس، ٹولز اور ٹیک سروسز</title>
+  
+  <!-- SEO & Meta -->
+  <meta name="description" content="ڈیجیٹل ساتھی: پاکستان کا جدید ترین پلیٹ فارم برائے تصدیق شدہ اینڈرائیڈ ایپس (APKs)، روزمرہ کاروباری و اسلامی ٹولز، پی ڈی ایف دستاویزات اور پروفیشنل سافٹ ویئر سروسز۔" />
+  <meta name="keywords" content="Digital Sathi, ڈیجیٹل ساتھی, APK download, khata app, urdu apps, zakat calculator, web development pakistan" />
+  <meta property="og:title" content="Digital Sathi — ڈیجیٹل ساتھی" />
+  <meta property="og:description" content="100% محفوظ اینڈرائڈ ایپس، مفید ٹولز اور ڈیجیٹل سروسز کا مستند مرکز۔" />
+  <meta property="og:image" content="/assets/logo.jpg" />
+  <meta property="og:type" content="website" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="/assets/logo.jpg" />
+
+  <!-- FontAwesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Custom Stylesheets -->
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/admin.css" />
+</head>
+<body class="rtl-mode">
+
+  <!-- =========================================================================
+       MAIN PUBLIC WEBSITE CONTAINER
+       ========================================================================= -->
+  <div id="main-website-content">
+
+    <!-- Top Announcement Bar -->
+    <div class="announcement-bar">
+      <div class="container announcement-inner">
+        <div class="announcement-left">
+          <span class="announcement-badge" data-i18n="announcement_badge">تصدیق شدہ سیکیورٹی</span>
+          <span id="announcement-text" data-i18n="announcement_text">ڈیجیٹل ساتھی کے تمام اے پی کے اور فائلیں 100% ٹیسٹ شدہ اور وائرس سے پاک ہیں۔</span>
+        </div>
+        <div class="announcement-right">
+          <!-- Language Switcher -->
+          <button class="header-tool-btn" onclick="window.i18n.toggleLang()" title="زبان تبدیل کریں / Change Language">
+            <i class="fa-solid fa-language"></i>
+            <span id="lang-btn-text" data-i18n="lang_toggle_text">English</span>
+          </button>
+          <!-- Theme Toggle -->
+          <button class="header-tool-btn" onclick="App.toggleTheme()" title="تھیم تبدیل کریں / Dark or Light">
+            <i id="theme-toggle-icon" class="fa-solid fa-sun"></i>
+          </button>
+          <!-- Admin Access -->
+          <a href="#admin" class="header-tool-btn text-cyan">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span data-i18n="nav_admin">ایڈمن پینل</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <header class="main-navbar">
+      <div class="container nav-container">
+        <!-- Logo -->
+        <a href="#home" class="brand-logo-wrapper">
+          <img src="/assets/logo.jpg" alt="Digital Sathi" class="brand-emblem" />
+          <div class="brand-text-block">
+            <h1 data-i18n="brand_name">ڈیجیٹل ساتھی</h1>
+            <span data-i18n="brand_subtitle">Digital Sathi App Store</span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav>
+          <ul class="desktop-nav-links">
+            <li><a href="#home" class="active" data-i18n="nav_home">ہوم</a></li>
+            <li><a href="#app-store" data-i18n="nav_apps">ایپ اسٹور</a></li>
+            <li><a href="#tools" data-i18n="nav_tools">مفید ٹولز</a></li>
+            <li><a href="#files" data-i18n="nav_files">پی ڈی ایف و فائلیں</a></li>
+            <li><a href="#services" data-i18n="nav_services">ہماری خدمات</a></li>
+            <li><a href="#contact" data-i18n="nav_contact">رابطہ کریں</a></li>
+          </ul>
+        </nav>
+
+        <!-- Search Bar -->
+        <div class="nav-search-bar">
+          <div class="search-input-wrapper">
+            <i class="fa-solid fa-magnifying-glass search-input-icon"></i>
+            <input type="text" id="main-search-input" data-i18n-placeholder="search_placeholder" placeholder="ایپس، ٹولز یا فائلیں تلاش کریں..." />
+          </div>
+        </div>
+
+        <!-- CTA Button -->
+        <div class="nav-actions-right">
+          <button class="btn btn-primary btn-sm" onclick="App.openQuoteModal()">
+            <i class="fa-solid fa-rocket"></i> <span data-i18n="btn_get_quote">آرڈر بک کریں</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+      <div class="container hero-content">
+        <div class="hero-badge-pill">
+          <i class="fa-solid fa-shield-check"></i>
+          <span data-i18n="hero_badge">پاکستان کا جدید ترین ٹیک و ایپ پلیٹ فارم 2026</span>
+        </div>
+        <h2 class="hero-title">
+          <span data-i18n="hero_title">آپ کا قابلِ اعتماد ایپ اسٹور اور</span>
+          <span class="hero-title-highlight" data-i18n="hero_title_highlight">ڈیجیٹل ساتھی</span>
+        </h2>
+        <p class="hero-description" data-i18n="hero_desc">
+          محفوظ اور تیز رفتار اینڈرائڈ ایپس (APKs)، روزمرہ کے مفید کاروباری و اسلامی ٹولز، مستند دستاویزات اور پیشہ ورانہ سافٹ ویئر سروسز — سب ایک ہی جگہ۔
+        </p>
+
+        <div class="hero-buttons-row">
+          <a href="#app-store" class="btn btn-primary btn-lg">
+            <i class="fa-solid fa-download"></i> <span data-i18n="hero_btn_explore">ایپس ڈاؤن لوڈ کریں</span>
+          </a>
+          <a href="#services" class="btn btn-secondary btn-lg">
+            <i class="fa-solid fa-laptop-code"></i> <span data-i18n="hero_btn_services">ہماری خدمات دیکھیں</span>
+          </a>
+        </div>
+
+        <!-- Platform Stats Ribbon -->
+        <div class="hero-stats-ribbon">
+          <div class="stat-item">
+            <span class="stat-num" id="stat-total-apps">8+</span>
+            <span class="stat-label" data-i18n="stat_verified_apps">تصدیق شدہ ایپس</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num" id="stat-total-downloads">430k+</span>
+            <span class="stat-label" data-i18n="stat_safe_downloads">محفوظ ڈاؤن لوڈز</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num" id="stat-avg-rating">4.9 ★</span>
+            <span class="stat-label" data-i18n="stat_clean_guarantee">اعلیٰ درجہ بندی</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num" id="stat-total-files">4+</span>
+            <span class="stat-label" data-i18n="files_section_title">مفید فائلیں و پی ڈی ایف</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Categories Filter Bar -->
+    <section class="categories-bar-section">
+      <div class="container">
+        <div class="category-chips-list" id="category-chips-container">
+          <!-- Injected via JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Optional Clean Ad Banner Slot -->
+    <div class="container mt-4 ad-placeholder-slot" style="display: none;">
+      <div style="background: var(--bg-surface); border: 1px dashed var(--border-subtle); padding: 1.25rem; border-radius: var(--radius-md); text-align: center; font-size: 0.8rem; color: var(--text-muted);">
+        <i class="fa-solid fa-rectangle-ad"></i> اسپانسرڈ اشتہارات کی جگہ (Clean Ad Space — Can be configured in Admin)
+      </div>
+    </div>
+
+    <!-- Featured / Popular Apps Section -->
+    <section class="section-container" id="featured-apps">
+      <div class="container">
+        <div class="section-header-row">
+          <div class="section-title-block">
+            <h3 data-i18n="popular_apps_title">مشہور اور مقبول ترین ایپس</h3>
+            <p data-i18n="popular_apps_sub">ہمارے صارفین کی سب سے زیادہ ڈاؤن لوڈ کردہ مستند ایپس</p>
+          </div>
+          <a href="#app-store" class="btn btn-outline-cyan btn-sm">
+            <span data-i18n="cat_all">تمام دیکھیں</span> <i class="fa-solid fa-arrow-left"></i>
+          </a>
+        </div>
+        <div class="apps-grid" id="featured-apps-grid">
+          <div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i> لوڈ ہو رہا ہے...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- New Releases Section -->
+    <section class="section-container" style="background: var(--bg-surface);" id="new-apps">
+      <div class="container">
+        <div class="section-header-row">
+          <div class="section-title-block">
+            <h3 data-i18n="new_apps_title">تازہ ترین ریلیزز</h3>
+            <p data-i18n="new_apps_sub">نئی شامل کردہ ایپس اور تازہ ترین ورژنز</p>
+          </div>
+        </div>
+        <div class="apps-grid" id="new-apps-grid">
+          <div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i> لوڈ ہو رہا ہے...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Full App Store Section with Toolbar -->
+    <section class="section-container" id="app-store">
+      <div class="container">
+        <div class="section-header-row">
+          <div class="section-title-block">
+            <h3 data-i18n="nav_apps">ایپ اسٹور (App Store)</h3>
+            <p id="store-results-count">تمام دستیاب ایپس کی فہرست</p>
+          </div>
+          <div class="sort-select-wrapper">
+            <label for="store-sort" class="text-muted" style="font-size: 0.85rem;"><i class="fa-solid fa-arrow-down-short-wide"></i> ترتیب:</label>
+            <select id="store-sort" class="sort-select" onchange="App.setSortOrder(this.value)">
+              <option value="popular">زیادہ ڈاؤن لوڈز (Popular)</option>
+              <option value="rating">اعلیٰ ریٹنگ (Highest Rated)</option>
+              <option value="newest">نئی ریلیز (Newest)</option>
+              <option value="size_asc">کم سائز (Smallest Size)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="apps-grid" id="app-store-grid">
+          <div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i> ایپس لوڈ ہو رہی ہیں...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Tools Suite -->
+    <section class="section-container" style="background: var(--bg-surface);" id="tools">
+      <div class="container">
+        <div class="section-header-row">
+          <div class="section-title-block">
+            <h3 data-i18n="tools_section_title">مفید آن لائن ٹولز</h3>
+            <p data-i18n="tools_section_sub">بغیر انسٹال کیے فوری استعمال ہونے والے اسمارٹ ٹولز</p>
+          </div>
+        </div>
+
+        <div class="tools-grid">
+          <!-- 1. Khata Calculator -->
+          <div class="tool-card" onclick="SathiTools.openToolModal('khata')">
+            <div class="tool-card-icon icon-emerald"><i class="fa-solid fa-calculator"></i></div>
+            <h4 data-i18n="tool_khata_title">کھاتہ و منافع کیلکولیٹر</h4>
+            <p data-i18n="tool_khata_desc">دکان و کاروبار کی آمدن، خرچ، ادھار اور خالص منافع کا فوری حساب لگائیں۔</p>
+            <div class="tool-card-footer">
+              <span data-i18n="btn_open_tool">ٹول استعمال کریں</span> <i class="fa-solid fa-arrow-left"></i>
+            </div>
+          </div>
+
+          <!-- 2. Zakat Calculator -->
+          <div class="tool-card" onclick="SathiTools.openToolModal('zakat')">
+            <div class="tool-card-icon icon-cyan"><i class="fa-solid fa-coins"></i></div>
+            <h4 data-i18n="tool_zakat_title">مستند زکوٰۃ کیلکولیٹر</h4>
+            <p data-i18n="tool_zakat_desc">سونے، چاندی، نقدی اور مالِ تجارت پر شرعی اصولوں کے مطابق زکوٰۃ معلوم کریں۔</p>
+            <div class="tool-card-footer">
+              <span data-i18n="btn_open_tool">ٹول استعمال کریں</span> <i class="fa-solid fa-arrow-left"></i>
+            </div>
+          </div>
+
+          <!-- 3. QR Code Generator -->
+          <div class="tool-card" onclick="SathiTools.openToolModal('qr')">
+            <div class="tool-card-icon icon-purple"><i class="fa-solid fa-qrcode"></i></div>
+            <h4 data-i18n="tool_qr_title">کیو آر کوڈ جنریٹر</h4>
+            <p data-i18n="tool_qr_desc">واٹس ایپ، ویب سائٹ، وائی فائی یا کسی بھی تحریر کا فوری ایچ ڈی کیو آر بنائیں۔</p>
+            <div class="tool-card-footer">
+              <span data-i18n="btn_open_tool">ٹول استعمال کریں</span> <i class="fa-solid fa-arrow-left"></i>
+            </div>
+          </div>
+
+          <!-- 4. Roman Urdu to Nastaliq Converter -->
+          <div class="tool-card" onclick="SathiTools.openToolModal('roman')">
+            <div class="tool-card-icon icon-amber"><i class="fa-solid fa-pen-nib"></i></div>
+            <h4 data-i18n="tool_roman_title">رومن اردو سے نستعلیق کنورٹر</h4>
+            <p data-i18n="tool_roman_desc">انگریزی حروف میں اردو ٹائپ کریں اور جمیل نوری نستعلیق رسم الخط پائیں۔</p>
+            <div class="tool-card-footer">
+              <span data-i18n="btn_open_tool">ٹول استعمال کریں</span> <i class="fa-solid fa-arrow-left"></i>
+            </div>
+          </div>
+
+          <!-- 5. Data & Unit Converter -->
+          <div class="tool-card" onclick="SathiTools.openToolModal('unit')">
+            <div class="tool-card-icon icon-rose"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
+            <h4 data-i18n="tool_unit_title">ڈیٹا و یونٹ کنورٹر</h4>
+            <p data-i18n="tool_unit_desc">موبائل ڈیٹا (MB, GB, TB) اور پیمائش کے مختلف یونٹس کو فوری تبدیل کریں۔</p>
+            <div class="tool-card-footer">
+              <span data-i18n="btn_open_tool">ٹول استعمال کریں</span> <i class="fa-solid fa-arrow-left"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Files & PDFs Library Section -->
+    <section class="section-container" id="files">
+      <div class="container">
+        <div class="section-header-row">
+          <div class="section-title-block">
+            <h3 data-i18n="files_section_title">پی ڈی ایف اور مفید دستاویزات</h3>
+            <p data-i18n="files_section_sub">کاروباری کھاتہ شیٹس، اسلامی گائیڈز اور رہبرِ روزگار</p>
+          </div>
+        </div>
+        <div class="files-grid" id="files-cards-container">
+          <div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i> فائلیں لوڈ ہو رہی ہیں...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Professional Services Section -->
+    <section class="section-container" style="background: var(--bg-surface);" id="services">
+      <div class="container">
+        <div class="section-header-row">
+          <div class="section-title-block">
+            <h3 data-i18n="services_section_title">ہماری پیشہ ورانہ خدمات</h3>
+            <p data-i18n="services_section_sub">جدید موبائل ایپس، خوبصورت ویب سائٹس اور برانڈنگ ڈیزائن</p>
+          </div>
+        </div>
+
+        <div class="services-grid">
+          <!-- App Development -->
+          <div class="service-card">
+            <div class="service-icon-box"><i class="fa-solid fa-mobile-screen"></i></div>
+            <h4 data-i18n="service_app_title">موبائل ایپ ڈویلپمنٹ</h4>
+            <p data-i18n="service_app_desc">اینڈرائیڈ اور آئی او ایس کے لیے تیز رفتار، محفوظ اور خوبصورت نیٹیو و فلوٹر ایپس۔</p>
+            <ul class="service-features-list">
+              <li><i class="fa-solid fa-circle-check"></i> اینڈرائڈ اور آئی او ایس ملٹی پلیٹ فارم</li>
+              <li><i class="fa-solid fa-circle-check"></i> پلے اسٹور پبلشنگ سپورٹ</li>
+              <li><i class="fa-solid fa-circle-check"></i> کلاؤڈ ڈیٹابیس اور لائیو پش نوٹیفکیشنز</li>
+            </ul>
+            <button class="btn btn-primary btn-block" onclick="App.openQuoteModal('موبائل ایپ ڈویلپمنٹ')">
+              <span data-i18n="btn_get_quote">قیمت معلوم کریں / آرڈر دیں</span>
+            </button>
+          </div>
+
+          <!-- Web Design & Development -->
+          <div class="service-card">
+            <div class="service-icon-box"><i class="fa-solid fa-globe"></i></div>
+            <h4 data-i18n="service_web_title">ویب سائٹ و پورٹل ڈویلپمنٹ</h4>
+            <p data-i18n="service_web_desc">ریسپانسو، جدید ڈیزائن اور گوگل سرچ میں سرِفہرست آنے والی جدید ویب سائٹس۔</p>
+            <ul class="service-features-list">
+              <li><i class="fa-solid fa-circle-check"></i> موبائل، ٹیبلٹ اور پی سی پر مکمل ریسپانسو</li>
+              <li><i class="fa-solid fa-circle-check"></i> تیز رفتار اسپیڈ اور ایس ای او آپٹیمائزیشن</li>
+              <li><i class="fa-solid fa-circle-check"></i> ایڈمن ڈیش بورڈ اور ای کامرس سپورٹ</li>
+            </ul>
+            <button class="btn btn-primary btn-block" onclick="App.openQuoteModal('ویب سائٹ ڈویلپمنٹ')">
+              <span data-i18n="btn_get_quote">قیمت معلوم کریں / آرڈر دیں</span>
+            </button>
+          </div>
+
+          <!-- Graphic Design & Branding -->
+          <div class="service-card">
+            <div class="service-icon-box"><i class="fa-solid fa-palette"></i></div>
+            <h4 data-i18n="service_graphic_title">گرافک ڈیزائننگ و برانڈنگ</h4>
+            <p data-i18n="service_graphic_desc">پیشہ ورانہ لوگو ڈیزائن، سوشل میڈیا پوسٹس، بینرز اور مکمل برانڈ شناخت۔</p>
+            <ul class="service-features-list">
+              <li><i class="fa-solid fa-circle-check"></i> ہائی ریزولوشن ویکٹر لوگوز</li>
+              <li><i class="fa-solid fa-circle-check"></i> سوشل میڈیا مارکیٹنگ پوسٹس و ریلز</li>
+              <li><i class="fa-solid fa-circle-check"></i> پرنٹ میڈیا اور بزنس کارڈ ڈیزائن</li>
+            </ul>
+            <button class="btn btn-primary btn-block" onclick="App.openQuoteModal('گرافک ڈیزائننگ')">
+              <span data-i18n="btn_get_quote">قیمت معلوم کریں / آرڈر دیں</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Choose Us / Trust Metrics -->
+    <section class="section-container" id="why-us">
+      <div class="container">
+        <div class="section-header-row text-center" style="display: block;">
+          <h3 data-i18n="why_us_title">ہمیں کیوں منتخب کریں؟</h3>
+          <p class="text-secondary">ڈیجیٹل ساتھی آپ کی سیکیورٹی، وقت اور ضروریات کو اولین ترجیح دیتا ہے</p>
+        </div>
+
+        <div class="why-us-grid">
+          <div class="why-us-card">
+            <i class="fa-solid fa-shield-virus why-icon"></i>
+            <h4>100% وائرس سے پاک</h4>
+            <p>ہر ایپ کو اشاعت سے قبل ملٹی اینٹی وائرس سسٹمز سے تفصیلی اسکین کیا جاتا ہے۔</p>
+          </div>
+          <div class="why-us-card">
+            <i class="fa-solid fa-bolt-lightning why-icon"></i>
+            <h4>تیز رفتار کلاؤڈ سرورز</h4>
+            <p>گوگل ڈرائیو اور تیز ترین سی ڈی این سرورز سے براہِ راست ڈاؤن لوڈنگ۔</p>
+          </div>
+          <div class="why-us-card">
+            <i class="fa-solid fa-ban why-icon"></i>
+            <h4>کوئی گمراہ کن اشتہار نہیں</h4>
+            <p>جعلی ڈاؤن لوڈ بٹنز یا وائرس لنکس کے بغیر صاف ستھرا اور محفوظ پلیٹ فارم۔</p>
+          </div>
+          <div class="why-us-card">
+            <i class="fa-solid fa-headset why-icon"></i>
+            <h4>24/7 تکنیکی معاونت</h4>
+            <p>خراب لنک کی فوری اطلاع اور ماہر ڈویلپرز کی جانب سے مستقل سپورٹ۔</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQs Section -->
+    <section class="section-container" style="background: var(--bg-surface);" id="faqs">
+      <div class="container" style="max-width: 800px;">
+        <div class="section-header-row text-center" style="display: block; margin-bottom: 2.5rem;">
+          <h3 data-i18n="faq_title">اکثر پوچھے جانے والے سوالات (FAQs)</h3>
+        </div>
+
+        <div class="faq-list">
+          <details class="calc-metric-card mb-2" style="padding: 1rem; cursor: pointer;">
+            <summary style="font-weight: 700; color: var(--text-primary);"><i class="fa-solid fa-circle-question text-cyan"></i> کیا یہاں سے اے پی کے فائل ڈاؤن لوڈ کرنا محفوظ ہے؟</summary>
+            <p style="margin-top: 0.65rem; color: var(--text-secondary); font-size: 0.9rem;">
+              جی ہاں! ڈیجیٹل ساتھی پر اپ لوڈ ہونے والی تمام APK فائلیں VirusTotal اور جدید سیکیورٹی ٹولز سے تصدیق شدہ ہوتی ہیں۔
+            </p>
+          </details>
+
+          <details class="calc-metric-card mb-2" style="padding: 1rem; cursor: pointer;">
+            <summary style="font-weight: 700; color: var(--text-primary);"><i class="fa-solid fa-circle-question text-cyan"></i> اگر ڈاؤن لوڈ لنک کام نہ کرے تو کیا کریں؟</summary>
+            <p style="margin-top: 0.65rem; color: var(--text-secondary); font-size: 0.9rem;">
+              ہر ایپ کے صفحے پر "خراب لنک کی رپورٹ کریں" کا بٹن موجود ہے۔ آپ فوراً مطلع کر سکتے ہیں اور ہمارا ایڈمن اسے فوری ٹھیک کرتا ہے۔
+            </p>
+          </details>
+
+          <details class="calc-metric-card mb-2" style="padding: 1rem; cursor: pointer;">
+            <summary style="font-weight: 700; color: var(--text-primary);"><i class="fa-solid fa-circle-question text-cyan"></i> کیا میں اپنی نئی موبائل ایپ یا ویب سائٹ بنوا سکتا ہوں؟</summary>
+            <p style="margin-top: 0.65rem; color: var(--text-secondary); font-size: 0.9rem;">
+              بالکل! ہماری پروفیشنل سروسز میں موبائل ایپ ڈویلپمنٹ، ریسپانسو ویب سائٹس اور گرافک ڈیزائننگ شامل ہیں۔ "آرڈر بک کریں" پر کلک کر کے قیمت معلوم کریں۔
+            </p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Us Section -->
+    <section class="section-container" id="contact">
+      <div class="container">
+        <div class="section-header-row">
+          <div class="section-title-block">
+            <h3 data-i18n="contact_section_title">ہم سے رابطہ کریں</h3>
+            <p data-i18n="contact_section_sub">کسی بھی سوال، تجاویز یا پروجیکٹ کے لیے ہماری ٹیم حاضر ہے</p>
+          </div>
+        </div>
+
+        <div class="contact-layout">
+          <!-- Left Info Card -->
+          <div class="contact-info-card">
+            <h4 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.25rem;">رابطے کے ذرائع</h4>
+
+            <div class="contact-method-item">
+              <div class="method-icon"><i class="fa-brands fa-whatsapp"></i></div>
+              <div>
+                <small class="text-muted">واٹس ایپ معاونت:</small>
+                <div><a href="https://wa.me/923001234567" target="_blank" class="text-cyan font-bold">+92 300 1234567</a></div>
+              </div>
+            </div>
+
+            <div class="contact-method-item">
+              <div class="method-icon"><i class="fa-solid fa-envelope"></i></div>
+              <div>
+                <small class="text-muted">ای میل رابطہ:</small>
+                <div><a href="mailto:contact@digitalsathi.pk" class="text-cyan font-bold">contact@digitalsathi.pk</a></div>
+              </div>
+            </div>
+
+            <div class="contact-method-item">
+              <div class="method-icon"><i class="fa-brands fa-telegram"></i></div>
+              <div>
+                <small class="text-muted">آفیشل ٹیلی گرام چینل:</small>
+                <div><a href="https://t.me/digitalsathiofficial" target="_blank" class="text-cyan font-bold">@digitalsathiofficial</a></div>
+              </div>
+            </div>
+
+            <div class="contact-method-item">
+              <div class="method-icon"><i class="fa-solid fa-location-dot"></i></div>
+              <div>
+                <small class="text-muted">مقام:</small>
+                <div>پاکستان (آن لائن گلوبل ڈیجیٹل سروسز)</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Contact Form -->
+          <div class="contact-form-card">
+            <form onsubmit="App.handleContactSubmit(event)">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>آپ کا نام: *</label>
+                  <input type="text" id="contact-name" class="form-control" required placeholder="محمد علی" />
+                </div>
+                <div class="form-group">
+                  <label>ای میل ایڈریس: *</label>
+                  <input type="email" id="contact-email" class="form-control" required placeholder="name@example.com" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>موضوع (Subject):</label>
+                <input type="text" id="contact-subject" class="form-control" placeholder="عام رابطہ / سروس کی معلومات" />
+              </div>
+              <div class="form-group">
+                <label>آپ کا پیغام: *</label>
+                <textarea id="contact-message" class="form-control" rows="4" required placeholder="اپنا پیغام یہاں تفصیل سے لکھیں..."></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">
+                <i class="fa-solid fa-paper-plane"></i> <span data-i18n="btn_submit">پیغام ارسال کریں</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <img src="/assets/logo.jpg" alt="Logo" style="width: 40px; height: 40px; border-radius: var(--radius-sm); border: 1px solid var(--accent-cyan);" />
+              <h4 style="font-size: 1.3rem; font-weight: 800;" data-i18n="brand_name">ڈیجیٹل ساتھی</h4>
+            </div>
+            <p data-i18n="footer_tagline">پاکستان کا قابلِ اعتماد پورٹل برائے ایپس، ٹولز اور ڈیجیٹل خدمات۔</p>
+            <div class="footer-social-row">
+              <a href="#" class="social-circle-btn"><i class="fa-brands fa-facebook-f"></i></a>
+              <a href="#" class="social-circle-btn"><i class="fa-brands fa-x-twitter"></i></a>
+              <a href="#" class="social-circle-btn"><i class="fa-brands fa-whatsapp"></i></a>
+              <a href="#" class="social-circle-btn"><i class="fa-brands fa-telegram"></i></a>
+              <a href="#" class="social-circle-btn"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+          </div>
+
+          <div class="footer-col">
+            <h5 data-i18n="footer_quick_links">فوری لنکس</h5>
+            <ul class="footer-links-list">
+              <li><a href="#home" data-i18n="nav_home">ہوم پیج</a></li>
+              <li><a href="#app-store" data-i18n="nav_apps">ایپ اسٹور</a></li>
+              <li><a href="#tools" data-i18n="nav_tools">آن لائن ٹولز</a></li>
+              <li><a href="#files" data-i18n="nav_files">پی ڈی ایف لائبریری</a></li>
+              <li><a href="#services" data-i18n="nav_services">ہماری خدمات</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-col">
+            <h5 data-i18n="footer_categories">مقبول کیٹیگریز</h5>
+            <ul class="footer-links-list">
+              <li><a href="#app-store" onclick="App.selectCategory('finance')">کھاتہ و فنانس</a></li>
+              <li><a href="#app-store" onclick="App.selectCategory('islamic')">اسلامی ایپس</a></li>
+              <li><a href="#app-store" onclick="App.selectCategory('education')">تعلیمی ایپس</a></li>
+              <li><a href="#app-store" onclick="App.selectCategory('utilities')">یوٹیلیٹیز و ٹولز</a></li>
+              <li><a href="#app-store" onclick="App.selectCategory('productivity')">پروڈکٹیوٹی</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-col">
+            <h5 data-i18n="footer_legal">قانونی معلومات</h5>
+            <ul class="footer-links-list">
+              <li><a href="#contact" data-i18n="privacy_policy">پرائیویسی پالیسی</a></li>
+              <li><a href="#contact" data-i18n="terms_conditions">شرائط و ضوابط</a></li>
+              <li><a href="#contact" data-i18n="disclaimer">ڈس کلیمر و حقوق</a></li>
+              <li><a href="#admin" class="text-cyan"><i class="fa-solid fa-lock"></i> ایڈمن لاگ ان</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom-bar">
+          <div data-i18n="copyright">© 2026 ڈیجیٹل ساتھی — جملہ حقوق محفوظ ہیں۔</div>
+          <div>Made with ❤️ for Pakistan's Digital Future</div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Mobile Bottom Navigation Bar (Screens < 768px) -->
+    <div class="mobile-bottom-nav">
+      <a href="#home" class="mobile-nav-item active">
+        <i class="fa-solid fa-house"></i>
+        <span data-i18n="nav_home">ہوم</span>
+      </a>
+      <a href="#app-store" class="mobile-nav-item">
+        <i class="fa-solid fa-mobile-screen"></i>
+        <span data-i18n="nav_apps">ایپس</span>
+      </a>
+      <a href="#tools" class="mobile-nav-item">
+        <i class="fa-solid fa-screwdriver-wrench"></i>
+        <span data-i18n="nav_tools">ٹولز</span>
+      </a>
+      <a href="#files" class="mobile-nav-item">
+        <i class="fa-solid fa-file-pdf"></i>
+        <span data-i18n="nav_files">فائلیں</span>
+      </a>
+      <a href="#services" class="mobile-nav-item">
+        <i class="fa-solid fa-briefcase"></i>
+        <span data-i18n="nav_services">خدمات</span>
+      </a>
+    </div>
+
+  </div> <!-- End #main-website-content -->
+
+  <!-- =========================================================================
+       ADMIN PANEL SPA CONTAINER (Visible when URL is #admin)
+       ========================================================================= -->
+  <div id="admin-container" style="display: none;">
+    <!-- Injected via /js/admin.js -->
+  </div>
+
+  <!-- =========================================================================
+       SHARED INTERACTIVE MODALS
+       ========================================================================= -->
+
+  <!-- 1. App Detail Modal -->
+  <div class="modal-overlay" id="app-detail-modal">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3 id="app-detail-modal-title">ایپ کی تفصیلات</h3>
+        <button class="modal-close-btn" onclick="document.getElementById('app-detail-modal').classList.remove('active')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="app-detail-modal-body">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Verified Download Modal -->
+  <div class="modal-overlay" id="download-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 data-i18n="download_modal_title">محفوظ ڈاؤن لوڈنگ سسٹم</h3>
+        <button class="modal-close-btn" onclick="document.getElementById('download-modal').classList.remove('active')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="download-modal-body">
+        <!-- Animated Scanner & Countdown -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Interactive Tool Modal -->
+  <div class="modal-overlay" id="tool-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="tool-modal-title">آن لائن ٹول</h3>
+        <button class="modal-close-btn" onclick="SathiTools.closeModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="tool-modal-body">
+        <!-- Dynamic Tool Form -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Report Broken Link Modal -->
+  <div class="modal-overlay" id="report-broken-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-triangle-exclamation text-amber"></i> خراب لنک کی اطلاع دیں</h3>
+        <button class="modal-close-btn" onclick="document.getElementById('report-broken-modal').classList.remove('active')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="App.handleReportSubmit(event)">
+          <input type="hidden" id="report-app-id" />
+          <input type="hidden" id="report-app-name" />
+          <div class="form-group">
+            <label>ایپ کا نام:</label>
+            <strong id="report-modal-app-name" class="text-cyan"></strong>
+          </div>
+          <div class="form-group">
+            <label>مسئلہ یا تفصیل درج کریں:</label>
+            <textarea id="report-user-note" class="form-control" rows="3" placeholder="ڈاؤن لوڈ لنک کام نہیں کر رہا یا فائل غائب ہے..."></textarea>
+          </div>
+          <div class="modal-actions-bar">
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('report-broken-modal').classList.remove('active')">منسوخ</button>
+            <button type="submit" class="btn btn-danger"><i class="fa-solid fa-paper-plane"></i> رپورٹ بھیجیں</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Service Quote / Inquiry Modal -->
+  <div class="modal-overlay" id="quote-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-rocket text-cyan"></i> پروجیکٹ کوٹیشن / آرڈر بک کریں</h3>
+        <button class="modal-close-btn" onclick="document.getElementById('quote-modal').classList.remove('active')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="App.handleQuoteSubmit(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label>آپ کا نام: *</label>
+              <input type="text" id="quote-name" class="form-control" required placeholder="محمد عثمان" />
+            </div>
+            <div class="form-group">
+              <label>واٹس ایپ / موبائل نمبر: *</label>
+              <input type="text" id="quote-phone" class="form-control" required placeholder="03001234567" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>مطلوبہ سروس: *</label>
+              <select id="quote-service-select" class="form-control" required>
+                <option value="موبائل ایپ ڈویلپمنٹ">موبائل ایپ ڈویلپمنٹ (Android & iOS)</option>
+                <option value="ویب سائٹ ڈویلپمنٹ">ویب سائٹ و پورٹل ڈویلپمنٹ</option>
+                <option value="گرافک ڈیزائننگ">گرافک ڈیزائننگ و برانڈنگ</option>
+                <option value="دیگر تکنیکی پروجیکٹ">دیگر سافٹ ویئر پروجیکٹ</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>متوقع بجٹ (روپے):</label>
+              <select id="quote-budget" class="form-control">
+                <option value="25,000 - 50,000 PKR">25,000 - 50,000 PKR</option>
+                <option value="50,000 - 100,000 PKR">50,000 - 100,000 PKR</option>
+                <option value="100,000+ PKR">100,000+ PKR</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>پروجیکٹ کی تفصیلات و ضروریات: *</label>
+            <textarea id="quote-message" class="form-control" rows="3" required placeholder="آپ کو کیسی ایپ یا ویب سائٹ درکار ہے؟ اپنے خیالات بتائیں۔"></textarea>
+          </div>
+          <div class="modal-actions-bar">
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('quote-modal').classList.remove('active')">بند کریں</button>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> درخواست جمع کروائیں</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Admin Upsert Modal (for Apps and Files) -->
+  <div class="modal-overlay" id="admin-modal">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3 id="admin-modal-title">ایڈمن فارم</h3>
+        <button class="modal-close-btn" onclick="AdminApp.closeModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="admin-modal-body">
+        <!-- Injected via admin.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script src="/js/i18n.js"></script>
+  <script src="/js/tools.js"></script>
+  <script src="/js/admin.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

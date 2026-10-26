@@ -823,6 +823,11 @@ app.put('/api/admin/settings', requireAdmin, (req, res) => {
   }
 });
 
+// Secret Admin Route: Redirect /admin directly to /#admin
+app.get(['/admin', '/admin/'], (req, res) => {
+  res.redirect('/#admin');
+});
+
 // SPA Fallback: send index.html for all non-api routes
 app.use((req, res, next) => {
   if (req.method === 'GET' && !req.path.startsWith('/api')) {
@@ -831,12 +836,16 @@ app.use((req, res, next) => {
   next();
 });
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`====================================================`);
-  console.log(`🚀 Digital Sathi (ڈیجیٹل ساتھی) Server Running!`);
-  console.log(`🌐 URL: http://localhost:${PORT}`);
-  console.log(`🔒 Admin Panel: http://localhost:${PORT}#admin`);
-  console.log(`🔑 Default Admin: admin / Admin@DigitalSathi2026`);
-  console.log(`====================================================`);
-});
+// Start Server (Stand-alone or Local)
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`====================================================`);
+    console.log(`🚀 Digital Sathi (ڈیجیٹل ساتھی) Server Running!`);
+    console.log(`🌐 URL: http://localhost:${PORT}`);
+    console.log(`🔒 Admin Panel: http://localhost:${PORT}#admin`);
+    console.log(`🔑 Default Admin: admin / Admin@DigitalSathi2026`);
+    console.log(`====================================================`);
+  });
+}
+
+module.exports = app;

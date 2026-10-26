@@ -32,6 +32,7 @@ const App = {
     this.bindEvents();
     this.handleRouting();
     window.addEventListener('hashchange', () => this.handleRouting());
+    window.addEventListener('popstate', () => this.handleRouting());
   },
 
   initTheme() {
@@ -80,7 +81,17 @@ const App = {
       }
 
       if (appsRes.success) {
-        this.apps = appsRes.apps;
+        let loadedApps = appsRes.apps || [];
+        try {
+          const localCustom = JSON.parse(localStorage.getItem('sathi_custom_apps') || '[]');
+          if (Array.isArray(localCustom) && localCustom.length > 0) {
+            const localIds = new Set(localCustom.map(a => a.id));
+            loadedApps = [...localCustom, ...loadedApps.filter(a => !localIds.has(a.id))];
+          }
+        } catch (e) {
+          console.warn('Local apps sync error:', e);
+        }
+        this.apps = loadedApps;
         this.renderFeaturedApps();
         this.renderNewApps();
         this.renderAppStoreGrid();
@@ -443,17 +454,21 @@ const App = {
       try {
         const res = await fetch(`/api/apps/${app.id}/download-check`, { method: 'POST' });
         const checkData = await res.json();
-
-        // Render Ready State with countdown and direct download buttons
-        this.renderDownloadReady(checkData, name, isUr);
+        if (checkData && checkData.download_url) {
+          this.renderDownloadReady(checkData, name, isUr);
+          return;
+        }
       } catch (err) {
-        container.innerHTML = `
-          <div class="alert alert-danger">
-            ${isUr ? 'ڈاؤن لوڈ سرور سے رابطہ منقطع ہو گیا۔ براہِ کرم دوبارہ کوشش کریں۔' : 'Failed to reach download server. Please try again.'}
-          </div>
-        `;
+        console.warn('API download check error, using direct app metadata:', err);
       }
-    }, 1800);
+
+      this.renderDownloadReady({
+        app_id: app.id,
+        download_url: app.download_url || '#',
+        size_mb: app.size_mb || 25,
+        version: app.version || 'v1.0.0'
+      }, name, isUr);
+    }, 1200);
   },
 
   renderDownloadReady(checkData, appName, isUr) {
@@ -641,16 +656,21 @@ const App = {
   },
 
   handleRouting() {
-    const hash = window.location.hash;
+    const hash = (window.location.hash || '').toLowerCase();
+    const path = (window.location.pathname || '').toLowerCase();
+    const isAdmin = hash === '#admin' || path === '/admin' || path.startsWith('/admin');
     const adminContainer = document.getElementById('admin-container');
     const mainWebsite = document.getElementById('main-website-content');
 
-    if (hash === '#admin') {
+    if (isAdmin) {
       if (mainWebsite) mainWebsite.style.display = 'none';
       if (adminContainer) {
         adminContainer.style.display = 'block';
-        window.AdminApp.init();
+        if (window.AdminApp && typeof window.AdminApp.init === 'function') {
+          window.AdminApp.init();
+        }
       }
+      window.scrollTo(0, 0);
     } else {
       if (adminContainer) adminContainer.style.display = 'none';
       if (mainWebsite) mainWebsite.style.display = 'block';

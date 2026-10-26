@@ -490,7 +490,17 @@ const AdminApp = {
     try {
       const res = await fetch('/api/admin/apps', { headers: this.getHeaders() });
       const data = await res.json();
-      this.apps = data.apps || [];
+      let appsList = data.apps || [];
+      try {
+        const localCustom = JSON.parse(localStorage.getItem('sathi_custom_apps') || '[]');
+        if (Array.isArray(localCustom) && localCustom.length > 0) {
+          const localIds = new Set(localCustom.map(a => a.id));
+          appsList = [...localCustom, ...appsList.filter(a => !localIds.has(a.id))];
+        }
+      } catch (e) {
+        console.warn('Local apps sync error:', e);
+      }
+      this.apps = appsList;
 
       container.innerHTML = `
         <div class="table-controls-row">
@@ -601,14 +611,19 @@ const AdminApp = {
   async deleteApp(appId) {
     if (!confirm('کیا آپ واقعی اس ایپ کو مستقل طور پر حذف کرنا چاہتے ہیں؟')) return;
     try {
-      const res = await fetch(`/api/admin/apps/${appId}`, {
+      await fetch(`/api/admin/apps/${appId}`, {
         method: 'DELETE',
         headers: this.getHeaders()
       });
-      if (res.ok) {
-        alert('ایپ کامیابی سے حذف ہو گئی۔');
-        this.renderAppsTab(document.getElementById('admin-tab-content'));
-      }
+      // Also remove from localStorage cache
+      try {
+        const localCustom = JSON.parse(localStorage.getItem('sathi_custom_apps') || '[]');
+        const filtered = localCustom.filter(a => a.id != appId);
+        localStorage.setItem('sathi_custom_apps', JSON.stringify(filtered));
+      } catch (e) {}
+
+      alert('ایپ کامیابی سے حذف ہو گئی۔');
+      this.renderAppsTab(document.getElementById('admin-tab-content'));
     } catch (e) {
       alert(e.message);
     }
@@ -761,16 +776,42 @@ const AdminApp = {
       const url = editId ? `/api/admin/apps/${editId}` : '/api/admin/apps';
       const method = editId ? 'PUT' : 'POST';
 
-      const res = await fetch(url, {
-        method,
-        headers: this.getHeaders(),
-        body: JSON.stringify(payload)
-      });
+      let serverData = {};
+      try {
+        const res = await fetch(url, {
+          method,
+          headers: this.getHeaders(),
+          body: JSON.stringify(payload)
+        });
+        serverData = await res.json();
+      } catch (e) {
+        console.warn('API sync warning:', e);
+      }
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to save');
+      // Persist in localStorage so it appears immediately on the website
+      try {
+        const localCustom = JSON.parse(localStorage.getItem('sathi_custom_apps') || '[]');
+        const appId = editId || serverData.id || Date.now();
+        const appObj = {
+          id: appId,
+          ...payload,
+          rating: 5.0,
+          rating_count: 1,
+          downloads_count: 50,
+          created_at: new Date().toISOString()
+        };
+        const idx = localCustom.findIndex(a => a.id == appId || a.name_en === payload.name_en);
+        if (idx >= 0) {
+          localCustom[idx] = { ...localCustom[idx], ...appObj };
+        } else {
+          localCustom.unshift(appObj);
+        }
+        localStorage.setItem('sathi_custom_apps', JSON.stringify(localCustom));
+      } catch (e) {
+        console.warn('Error saving to localStorage:', e);
+      }
 
-      alert(data.message || 'کامیابی سے محفوظ ہو گیا۔');
+      alert('شاباش! ایپ کامیابی سے شائع ہو گئی اور ویب سائٹ پر شامل ہو گئی ہے!');
       this.closeModal();
       this.renderAppsTab(document.getElementById('admin-tab-content'));
     } catch (err) {

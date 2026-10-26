@@ -3,16 +3,33 @@
  * Uses Node.js native DatabaseSync from node:sqlite
  */
 
-const { DatabaseSync } = require('node:sqlite');
+const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcryptjs');
+const { DatabaseSync } = require('node:sqlite');
 
-const dbPath = path.join(__dirname, 'digital_sathi.db');
+let dbPath = path.join(__dirname, 'digital_sathi.db');
+if (process.env.VERCEL) {
+  const tmpDb = path.join('/tmp', 'digital_sathi.db');
+  try {
+    if (!fs.existsSync(tmpDb) && fs.existsSync(dbPath)) {
+      fs.copyFileSync(dbPath, tmpDb);
+    }
+  } catch (e) {
+    console.error('Error copying db to /tmp:', e);
+  }
+  dbPath = tmpDb;
+}
+
 const db = new DatabaseSync(dbPath);
 
 // Enable WAL mode for high performance and integrity
-db.exec('PRAGMA journal_mode = WAL;');
-db.exec('PRAGMA foreign_keys = ON;');
+try {
+  db.exec('PRAGMA journal_mode = WAL;');
+  db.exec('PRAGMA foreign_keys = ON;');
+} catch (e) {
+  console.log('PRAGMA error (ignored on serverless):', e.message);
+}
 
 // Initialize Tables
 function initDatabase() {

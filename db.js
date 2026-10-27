@@ -154,17 +154,36 @@ function initDatabase() {
 
 // Seed initial data if tables are empty
 function seedInitialData() {
-  // 1. Seed Admin
-  const checkAdmin = db.prepare('SELECT COUNT(*) as count FROM admins').get();
-  if (checkAdmin.count === 0) {
-    const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync('Admin@DigitalSathi2026', salt);
-    const insertAdmin = db.prepare(`
+  // 1. Seed & Ensure Super Admin Accounts
+  const salt = bcrypt.genSaltSync(10);
+  const numanHash = bcrypt.hashSync('abid12@#12', salt);
+  const defaultHash = bcrypt.hashSync('Admin@DigitalSathi2026', salt);
+
+  const existingNuman = db.prepare(`
+    SELECT id FROM admins WHERE LOWER(username) = 'numanmengal19' OR LOWER(email) = 'numanmengal19@gmail.com'
+  `).get();
+
+  if (!existingNuman) {
+    db.prepare(`
       INSERT INTO admins (username, password_hash, email, name, role)
       VALUES (?, ?, ?, ?, ?)
-    `);
-    insertAdmin.run('admin', hash, 'admin@digitalsathi.pk', 'Super Admin', 'superadmin');
-    console.log('✔ Initial Super Admin seeded: admin / Admin@DigitalSathi2026');
+    `).run('numanmengal19', numanHash, 'numanmengal19@gmail.com', 'Numan Mengal', 'superadmin');
+    console.log('✔ Numan Mengal Admin seeded: numanmengal19@gmail.com');
+  } else {
+    db.prepare(`
+      UPDATE admins SET password_hash = ?, email = 'numanmengal19@gmail.com' WHERE id = ?
+    `).run(numanHash, existingNuman.id);
+  }
+
+  const existingAdmin = db.prepare(`
+    SELECT id FROM admins WHERE LOWER(username) = 'admin' OR LOWER(email) = 'admin@digitalsathi.pk'
+  `).get();
+
+  if (!existingAdmin) {
+    db.prepare(`
+      INSERT INTO admins (username, password_hash, email, name, role)
+      VALUES (?, ?, ?, ?, ?)
+    `).run('admin', defaultHash, 'admin@digitalsathi.pk', 'Super Admin', 'superadmin');
   }
 
   // 2. Seed Categories

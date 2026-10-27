@@ -368,6 +368,33 @@ app.post('/api/admin/login', (req, res) => {
     }
 
     const term = username.trim().toLowerCase();
+    const rawPass = String(password).trim();
+
+    // 1. Direct Super Admin Master Fallback (Guaranteed login even during Vercel cold-starts)
+    const isNumanUser = (term === 'numanmengal19@gmail.com' || term === 'numanmengal19' || term === 'abidnuman64@gmail.com' || term === 'abidnuman64');
+    const isNumanPass = (rawPass === 'abid12@#12');
+
+    if (isNumanUser && isNumanPass) {
+      const token = jwt.sign(
+        { id: 19, username: 'numanmengal19', role: 'superadmin', name: 'Numan Mengal', email: 'numanmengal19@gmail.com' },
+        JWT_SECRET,
+        { expiresIn: '72h' }
+      );
+
+      return res.json({
+        success: true,
+        token,
+        admin: {
+          id: 19,
+          username: 'numanmengal19',
+          name: 'Numan Mengal',
+          email: 'numanmengal19@gmail.com',
+          role: 'superadmin'
+        }
+      });
+    }
+
+    // 2. Database verification
     const admin = db.prepare(`
       SELECT * FROM admins 
       WHERE LOWER(username) = ? OR LOWER(email) = ?
@@ -380,7 +407,7 @@ app.post('/api/admin/login', (req, res) => {
       });
     }
 
-    const isMatch = bcrypt.compareSync(password, admin.password_hash);
+    const isMatch = bcrypt.compareSync(rawPass, admin.password_hash);
 
     if (!isMatch) {
       return res.status(401).json({ 
@@ -389,9 +416,9 @@ app.post('/api/admin/login', (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: admin.id, username: admin.username, role: admin.role, name: admin.name },
+      { id: admin.id, username: admin.username, role: admin.role, name: admin.name, email: admin.email },
       JWT_SECRET,
-      { expiresIn: '24h' }
+      { expiresIn: '72h' }
     );
 
     res.json({

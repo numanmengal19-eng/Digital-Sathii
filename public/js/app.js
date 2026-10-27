@@ -117,11 +117,54 @@ const App = {
       ticker.innerText = (isUr ? settings.announcement_text_ur : settings.announcement_text_en) || 'خوش آمدید! ڈیجیٹل ساتھی پر تمام فائلیں تصدیق شدہ اور محفوظ ہیں۔';
     }
 
-    // Toggle ad spaces if configured
-    if (settings.ads_enabled === 'true') {
-      document.querySelectorAll('.ad-placeholder-slot').forEach(el => el.style.display = 'block');
+    // Toggle ad spaces and render real ad banner
+    const isAdsActive = (settings.ads_enabled !== 'false') || (localStorage.getItem('sathi_ads_enabled') === 'true');
+    const adCode = settings.banner_ad_code || localStorage.getItem('sathi_banner_ad_code') || '';
+    this.renderAdBanner(isAdsActive, adCode);
+  },
+
+  renderAdBanner(isActive, customCode) {
+    const container = document.getElementById('ad-banner-container');
+    if (!container) return;
+
+    if (!isActive) {
+      container.style.display = 'none';
+      return;
+    }
+
+    container.style.display = 'block';
+
+    if (customCode && customCode.trim()) {
+      container.innerHTML = `<div class="custom-ad-wrapper">${customCode}</div>`;
+      // Execute any script tags inside customCode
+      container.querySelectorAll('script').forEach(s => {
+        const newScript = document.createElement('script');
+        Array.from(s.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+        newScript.appendChild(document.createTextNode(s.innerHTML));
+        s.parentNode.replaceChild(newScript, s);
+      });
     } else {
-      document.querySelectorAll('.ad-placeholder-slot').forEach(el => el.style.display = 'none');
+      // High-converting Sponsored Adsterra Smart Banner
+      const isUr = window.i18n ? window.i18n.isUrdu() : true;
+      container.innerHTML = `
+        <div class="sponsored-banner-box" onclick="SathiTools.openSmartLink('home_banner')">
+          <div class="sponsored-badge">
+            <i class="fa-solid fa-star text-amber"></i> ${isUr ? 'اسپانسرڈ ڈیل / اشتہار' : 'Sponsored Deal'}
+          </div>
+          <div class="sponsored-content">
+            <div class="sponsored-icon">
+              <i class="fa-solid fa-bolt text-cyan"></i>
+            </div>
+            <div class="sponsored-text">
+              <h4>${isUr ? 'خصوصی پیشکش اور اسپانسر انعامات دیکھیں' : 'Explore Special Deals & Rewards!'}</h4>
+              <p>${isUr ? 'ہمارے تصدیق شدہ ایڈ پارٹنر کی تازہ ترین خصوصی آفرز دیکھنے کے لیے کلک کریں۔' : 'Click to discover verified special offers from our monetization partner.'}</p>
+            </div>
+            <button class="btn btn-primary btn-sm">
+              ${isUr ? 'ابھی حاصل کریں' : 'Claim Now'} <i class="fa-solid fa-arrow-left"></i>
+            </button>
+          </div>
+        </div>
+      `;
     }
   },
 

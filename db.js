@@ -293,12 +293,17 @@ function seedInitialData() {
     insertSetting.run('site_name_ur', 'ڈیجیٹل ساتھی');
     insertSetting.run('contact_whatsapp', '+92 300 1234567');
     insertSetting.run('contact_email', 'contact@digitalsathi.pk');
-    insertSetting.run('ads_enabled', 'false');
+    insertSetting.run('ads_enabled', 'true');
     insertSetting.run('telegram_channel', 'https://t.me/digitalsathiofficial');
     insertSetting.run('announcement_text_ur', 'خوش آمدید! ڈیجیٹل ساتھی کے تمام اے پی کے اور فائلیں 100% ٹیسٹ شدہ اور محفوظ ہیں۔');
     insertSetting.run('announcement_text_en', 'Welcome to Digital Sathi! All APKs and files are 100% verified, clean, and tested.');
     console.log('✔ Default Settings initialized');
   }
+
+  // Ensure ads_enabled is true
+  try {
+    db.prepare("INSERT INTO settings (key, value) VALUES ('ads_enabled', 'true') ON CONFLICT(key) DO UPDATE SET value = 'true'").run();
+  } catch(e) {}
 }
 
 initDatabase();

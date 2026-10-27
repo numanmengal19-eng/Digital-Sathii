@@ -1033,10 +1033,22 @@ const AdminApp = {
           <div class="form-group">
             <label>گوگل ایڈسینس یا اشتہارات فعال کریں (Enable Ad Slots):</label>
             <select id="set_ads" class="form-control">
-              <option value="false" ${settings.ads_enabled === 'false' ? 'selected' : ''}>غیر فعال (Disabled - صاف ستھرا ڈیزائن)</option>
-              <option value="true" ${settings.ads_enabled === 'true' ? 'selected' : ''}>فعال (Enabled)</option>
+              <option value="true" ${settings.ads_enabled !== 'false' ? 'selected' : ''}>فعال (Enabled — اشتہارات دکھائیں)</option>
+              <option value="false" ${settings.ads_enabled === 'false' ? 'selected' : ''}>غیر فعال (Disabled)</option>
             </select>
           </div>
+
+          <!-- Adsterra / Custom Ad Script Code -->
+          <div class="form-group">
+            <label style="font-weight: 700; color: var(--accent-cyan);">
+              <i class="fa-solid fa-code"></i> بینر ایڈ اسکرپٹ کوڈ (Adsterra / AdSense Script Code):
+            </label>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+              اگر آپ کے پاس Adsterra کا بینر کوڈ (300x250، 728x90، یا Native Banner) یا گوگل ایڈسینس کوڈ ہے تو یہاں پیسٹ کریں۔ اگر خالی چھوڑیں گے تو خودکار سمارٹ بینر دکھایا جائے گا۔
+            </p>
+            <textarea id="set_ad_code" class="form-control" rows="4" placeholder="<script type='text/javascript'>...</script>">${settings.banner_ad_code || localStorage.getItem('sathi_banner_ad_code') || ''}</textarea>
+          </div>
+
           <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> ترتیبات محفوظ کریں</button>
         </form>
       `;
@@ -1055,6 +1067,12 @@ const AdminApp = {
       if (window.SathiTools) window.SathiTools.setSmartLinkUrl(smartLinkVal);
     }
 
+    const adsVal = document.getElementById('set_ads')?.value || 'true';
+    localStorage.setItem('sathi_ads_enabled', adsVal);
+
+    const adCode = document.getElementById('set_ad_code')?.value?.trim() || '';
+    localStorage.setItem('sathi_banner_ad_code', adCode);
+
     const payload = {
       settings: {
         site_name_ur: document.getElementById('set_name_ur')?.value,
@@ -1062,7 +1080,8 @@ const AdminApp = {
         contact_whatsapp: document.getElementById('set_wa')?.value,
         contact_email: document.getElementById('set_email')?.value,
         announcement_text_ur: document.getElementById('set_ann_ur')?.value,
-        ads_enabled: document.getElementById('set_ads')?.value
+        ads_enabled: adsVal,
+        banner_ad_code: adCode
       }
     };
     const res = await fetch('/api/admin/settings', {
@@ -1071,7 +1090,10 @@ const AdminApp = {
       body: JSON.stringify(payload)
     });
     if (res.ok) {
-      alert('ترتیبات اور سمارٹ لنک ایڈ کامیابی سے محفوظ ہو گئے ہیں۔');
+      alert('ترتیبات اور اشتہارات کامیابی سے محفوظ ہو گئے ہیں۔');
+      if (window.App && typeof window.App.renderAdBanner === 'function') {
+        window.App.renderAdBanner(adsVal === 'true', adCode);
+      }
     }
   },
 

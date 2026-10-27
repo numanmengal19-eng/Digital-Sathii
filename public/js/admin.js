@@ -990,7 +990,7 @@ const AdminApp = {
       const res = await fetch('/api/admin/settings', { headers: this.getHeaders() });
       const { settings } = await res.json();
 
-      const savedSmartLink = localStorage.getItem('sathi_smartlink_url') || '';
+      const savedSmartLink = (settings && settings.smartlink_url) || localStorage.getItem('sathi_smartlink_url') || '';
 
       container.innerHTML = `
         <form class="admin-settings-form" onsubmit="AdminApp.saveSettings(event)">
@@ -1025,7 +1025,7 @@ const AdminApp = {
               <i class="fa-solid fa-link"></i> ایڈسٹرا سمارٹ لنک ایڈ (Adsterra Smartlink URL):
             </label>
             <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
-              یہاں اپنا Adsterra Direct Smartlink پیسٹ کریں (مثال: https://www.profitablecpmrate.com/... )۔ یہ آن لائن ٹولز میں کارآمد اشتہاری لنکس کے طور پر کام کرے گا۔
+              یہاں اپنا Adsterra Direct Smartlink درج کریں۔ ویب سائٹ پر کہیں بھی صارف کے کلک کرنے پر یہ سمارٹ لنک خودکار طور پر نئی ونڈو میں کھلے گا۔
             </p>
             <input type="url" id="set_smartlink" class="form-control" placeholder="https://www.profitablecpmrate.com/..." value="${savedSmartLink}" />
           </div>
@@ -1060,10 +1060,11 @@ const AdminApp = {
   async saveSettings(e) {
     e.preventDefault();
 
-    // Save Smartlink locally and in tools engine
-    const smartLinkVal = document.getElementById('set_smartlink')?.value?.trim();
+    // Save Smartlink locally and in Smartlink Engine
+    const smartLinkVal = document.getElementById('set_smartlink')?.value?.trim() || '';
     if (smartLinkVal) {
       localStorage.setItem('sathi_smartlink_url', smartLinkVal);
+      if (window.SmartlinkAdEngine) window.SmartlinkAdEngine.setUrl(smartLinkVal);
       if (window.SathiTools) window.SathiTools.setSmartLinkUrl(smartLinkVal);
     }
 
@@ -1080,6 +1081,7 @@ const AdminApp = {
         contact_whatsapp: document.getElementById('set_wa')?.value,
         contact_email: document.getElementById('set_email')?.value,
         announcement_text_ur: document.getElementById('set_ann_ur')?.value,
+        smartlink_url: smartLinkVal,
         ads_enabled: adsVal,
         banner_ad_code: adCode
       }

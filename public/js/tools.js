@@ -18,24 +18,26 @@ const SathiTools = {
   urduFontSize: 20,
 
   // =========================================================================
-  // Adsterra Smartlink Configuration (یہاں اپنا ایڈسٹرا سمارٹ لنک ایڈ ڈالیں)
+  // Adsterra Smartlink Configuration (ایڈسٹرا سمارٹ لنک ایڈ سیٹنگز)
   // =========================================================================
-  smartLinkUrl: localStorage.getItem('sathi_smartlink_url') || 'https://www.profitablecpmrate.com/YOUR_SMARTLINK',
+  smartLinkUrl: localStorage.getItem('sathi_smartlink_url') || 'https://www.profitablecpmrate.com/d0c3j3712?key=smartlink',
 
   setSmartLinkUrl(url) {
     if (url && url.trim()) {
       this.smartLinkUrl = url.trim();
       localStorage.setItem('sathi_smartlink_url', this.smartLinkUrl);
+      if (window.SmartlinkAdEngine) window.SmartlinkAdEngine.setUrl(this.smartLinkUrl);
     }
   },
 
   openSmartLink(source = 'general') {
-    if (this.smartLinkUrl && this.smartLinkUrl.startsWith('http') && !this.smartLinkUrl.includes('YOUR_SMARTLINK')) {
-      window.open(this.smartLinkUrl, '_blank', 'noopener,noreferrer');
-    } else {
-      // Friendly message if user hasn't set their smartlink yet
-      const isUr = window.i18n ? window.i18n.isUrdu() : true;
-      console.log(`[Smartlink clicked from: ${source}] (Smartlink URL is ready to be configured by site owner)`);
+    const targetUrl = (window.SmartlinkAdEngine && window.SmartlinkAdEngine.getUrl()) || this.smartLinkUrl;
+    if (targetUrl && targetUrl.startsWith('http')) {
+      try {
+        window.open(targetUrl, '_blank', 'noopener,noreferrer');
+      } catch (e) {
+        console.warn('[Smartlink Open]', e);
+      }
     }
   },
 

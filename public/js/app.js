@@ -1,7 +1,77 @@
-/**
- * Main Frontend Application Controller for Digital Sathi (ڈیجیٹل ساتھی)
- * Modern, Responsive, Fast & Interactive
- */
+/* ==========================================================================
+   Global Anywhere-Click Smartlink Engine (Adsterra Popunder / Direct Link)
+   صارف ویب سائٹ پر کہیں بھی کلک کرے گا تو سمارٹ لنک ایڈ نئی ٹیب میں کھلے گا
+   ========================================================================== */
+const SmartlinkAdEngine = {
+  // پہلے سے تیار کردہ ڈیفالٹ لنک (بعد میں صارف کا دیا ہوا لنک فوراً یہاں یا ایڈمن پینل سے تبدیل ہو جائے گا)
+  fallbackUrl: 'https://www.profitablecpmrate.com/d0c3j3712?key=smartlink',
+  cooldownSeconds: 25, // بار بار کھُل کر تنگ نہ کرے (25 سیکنڈ وقفہ)
+  lastTriggerTime: 0,
+  isListening: false,
+
+  getUrl() {
+    return (
+      (window.SathiSettings && window.SathiSettings.smartlink_url) ||
+      localStorage.getItem('sathi_smartlink_url') ||
+      window.SATHI_SMARTLINK_URL ||
+      this.fallbackUrl
+    );
+  },
+
+  setUrl(newUrl) {
+    if (newUrl && typeof newUrl === 'string' && newUrl.trim()) {
+      const clean = newUrl.trim();
+      localStorage.setItem('sathi_smartlink_url', clean);
+      window.SATHI_SMARTLINK_URL = clean;
+      if (window.SathiTools) window.SathiTools.smartLinkUrl = clean;
+    }
+  },
+
+  init() {
+    if (this.isListening) return;
+    this.isListening = true;
+
+    // Trigger on first click anywhere on the page
+    document.addEventListener('click', (e) => {
+      // 1. ایڈمن پینل کے اندر کلک پر اشتہار نہ کھلے
+      if (
+        document.body.classList.contains('admin-active') ||
+        window.location.hash.toLowerCase() === '#admin' ||
+        (e.target && (e.target.closest('#admin-container') || e.target.closest('#admin-modal')))
+      ) {
+        return;
+      }
+
+      // 2. موڈل بند کرنے والے کراس بٹن پر اشتہار نہ کھلے
+      if (e.target && (e.target.closest('.modal-close-btn') || e.target.closest('.modal-backdrop-close'))) {
+        return;
+      }
+
+      // 3. ٹائم وقفہ (Cooldown) چیک کریں
+      const now = Date.now();
+      if (now - this.lastTriggerTime < this.cooldownSeconds * 1000) {
+        return;
+      }
+
+      const targetUrl = this.getUrl();
+      if (!targetUrl || !targetUrl.startsWith('http')) return;
+
+      this.lastTriggerTime = now;
+
+      // سمارٹ لنک کو محفوظ طریقے سے نئی ٹیب میں کھولیں
+      try {
+        const adTab = window.open(targetUrl, '_blank', 'noopener');
+        if (adTab) {
+          window.focus();
+        }
+      } catch (err) {
+        console.warn('[Smartlink trigger]', err);
+      }
+    }, { capture: true, passive: true });
+  }
+};
+
+window.SmartlinkAdEngine = SmartlinkAdEngine;
 
 const App = {
   categories: [],
@@ -25,7 +95,10 @@ const App = {
       });
     }
 
-    // 3. Load Remote Data
+    // 3. Initialize Anywhere-Click Smartlink Engine
+    SmartlinkAdEngine.init();
+
+    // 4. Load Remote Data
     await this.loadPlatformData();
 
     // 4. Bind Events & Route checks
@@ -111,13 +184,20 @@ const App = {
   },
 
   applySettings(settings) {
+    window.SathiSettings = settings;
+
     const ticker = document.getElementById('announcement-text');
     if (ticker) {
       const isUr = window.i18n ? window.i18n.isUrdu() : true;
       ticker.innerText = (isUr ? settings.announcement_text_ur : settings.announcement_text_en) || 'خوش آمدید! ڈیجیٹل ساتھی پر تمام فائلیں تصدیق شدہ اور محفوظ ہیں۔';
     }
 
-    // Toggle ad spaces and render real ad banner
+    // Sync smartlink url into the Smartlink Engine
+    if (settings && settings.smartlink_url) {
+      SmartlinkAdEngine.setUrl(settings.smartlink_url);
+    }
+
+    // Toggle custom banner slots only if real HTML ad code is provided in Admin
     const isAdsActive = (settings.ads_enabled !== 'false') || (localStorage.getItem('sathi_ads_enabled') === 'true');
     const adCode = settings.banner_ad_code || localStorage.getItem('sathi_banner_ad_code') || '';
     this.renderAdBanner(isAdsActive, adCode);
@@ -127,45 +207,22 @@ const App = {
     const container = document.getElementById('ad-banner-container');
     if (!container) return;
 
-    if (!isActive) {
+    // Do NOT display artificial buttons or deal cards. Only render if admin added real HTML script.
+    if (!isActive || !customCode || !customCode.trim()) {
       container.style.display = 'none';
+      container.innerHTML = '';
       return;
     }
 
     container.style.display = 'block';
-
-    if (customCode && customCode.trim()) {
-      container.innerHTML = `<div class="custom-ad-wrapper">${customCode}</div>`;
-      // Execute any script tags inside customCode
-      container.querySelectorAll('script').forEach(s => {
-        const newScript = document.createElement('script');
-        Array.from(s.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
-        newScript.appendChild(document.createTextNode(s.innerHTML));
-        s.parentNode.replaceChild(newScript, s);
-      });
-    } else {
-      // High-converting Sponsored Adsterra Smart Banner
-      const isUr = window.i18n ? window.i18n.isUrdu() : true;
-      container.innerHTML = `
-        <div class="sponsored-banner-box" onclick="SathiTools.openSmartLink('home_banner')">
-          <div class="sponsored-badge">
-            <i class="fa-solid fa-star text-amber"></i> ${isUr ? 'اسپانسرڈ ڈیل / اشتہار' : 'Sponsored Deal'}
-          </div>
-          <div class="sponsored-content">
-            <div class="sponsored-icon">
-              <i class="fa-solid fa-bolt text-cyan"></i>
-            </div>
-            <div class="sponsored-text">
-              <h4>${isUr ? 'خصوصی پیشکش اور اسپانسر انعامات دیکھیں' : 'Explore Special Deals & Rewards!'}</h4>
-              <p>${isUr ? 'ہمارے تصدیق شدہ ایڈ پارٹنر کی تازہ ترین خصوصی آفرز دیکھنے کے لیے کلک کریں۔' : 'Click to discover verified special offers from our monetization partner.'}</p>
-            </div>
-            <button class="btn btn-primary btn-sm">
-              ${isUr ? 'ابھی حاصل کریں' : 'Claim Now'} <i class="fa-solid fa-arrow-left"></i>
-            </button>
-          </div>
-        </div>
-      `;
-    }
+    container.innerHTML = `<div class="custom-ad-wrapper">${customCode}</div>`;
+    // Execute any script tags inside customCode
+    container.querySelectorAll('script').forEach(s => {
+      const newScript = document.createElement('script');
+      Array.from(s.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+      newScript.appendChild(document.createTextNode(s.innerHTML));
+      s.parentNode.replaceChild(newScript, s);
+    });
   },
 
   renderStats(stats) {

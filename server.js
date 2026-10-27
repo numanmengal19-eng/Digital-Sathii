@@ -358,41 +358,7 @@ app.post('/api/reports/broken-link', (req, res) => {
    ADMIN AUTHENTICATION & MANAGEMENT ROUTES
    ========================================================================= */
 
-// Set or Reset Admin Real Password
-app.post('/api/admin/set-password', (req, res) => {
-  try {
-    const { email, password, name } = req.body;
-    if (!email || !password || password.length < 4) {
-      return res.status(400).json({ error: 'براہِ کرم درست ای میل اور کم از کم 4 حروف کا پاس ورڈ درج کریں۔' });
-    }
-
-    const cleanEmail = email.trim().toLowerCase();
-    const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(password, salt);
-
-    const existing = db.prepare('SELECT id, username FROM admins WHERE LOWER(email) = ? OR LOWER(username) = ?').get(cleanEmail, cleanEmail);
-    if (existing) {
-      db.prepare('UPDATE admins SET password_hash = ? WHERE id = ?').run(hash, existing.id);
-      return res.json({ 
-        success: true, 
-        message: `آپ کے ای میل (${cleanEmail}) کا نیا پاس ورڈ کامیابی سے محفوظ ہو گیا ہے۔ اب آپ اسی پاس ورڈ سے لاگ ان کر سکتے ہیں۔` 
-      });
-    } else {
-      const username = cleanEmail.split('@')[0];
-      db.prepare('INSERT INTO admins (username, password_hash, email, name, role) VALUES (?, ?, ?, ?, ?)').run(
-        username, hash, cleanEmail, name || username, 'admin'
-      );
-      return res.json({ 
-        success: true, 
-        message: `نیا ایڈمن اکاؤنٹ بن گیا اور پاس ورڈ محفوظ ہو گیا! اب آپ لاگ ان کر سکتے ہیں۔` 
-      });
-    }
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Admin Login
+// Admin Login (Strict, Secure Authentication)
 app.post('/api/admin/login', (req, res) => {
   try {
     const { username, password } = req.body;
@@ -402,26 +368,23 @@ app.post('/api/admin/login', (req, res) => {
     }
 
     const term = username.trim().toLowerCase();
-    // Allow matching by username, exact email, or prefix match (e.g., abidnuman64@gmai...)
     const admin = db.prepare(`
       SELECT * FROM admins 
-      WHERE LOWER(username) = ? OR LOWER(email) = ? OR LOWER(email) LIKE ? OR LOWER(username) LIKE ?
+      WHERE LOWER(username) = ? OR LOWER(email) = ?
       LIMIT 1
-    `).get(term, term, term + '%', term + '%');
+    `).get(term, term);
 
     if (!admin) {
       return res.status(401).json({ 
-        error: 'یہ ای میل یا یوزر نیم ڈیٹا بیس میں موجود نہیں ہے۔ آپ نیچے "اپنا نیا پاس ورڈ سیٹ کریں" پر کلک کر کے اپنا پاس ورڈ سیٹ کر سکتے ہیں۔' 
+        error: 'درج کردہ ای میل یا پاس ورڈ درست نہیں ہے۔' 
       });
     }
 
-    const isMatch = bcrypt.compareSync(password, admin.password_hash) ||
-                    password === 'Admin@DigitalSathi2026' ||
-                    password === 'admin123';
+    const isMatch = bcrypt.compareSync(password, admin.password_hash);
 
     if (!isMatch) {
       return res.status(401).json({ 
-        error: 'درج کردہ پاس ورڈ درست نہیں ہے۔ اگر آپ نیا پاس ورڈ لگانا چاہتے ہیں تو "اپنا نیا پاس ورڈ سیٹ کریں" کا بٹن دبائیں۔' 
+        error: 'درج کردہ ای میل یا پاس ورڈ درست نہیں ہے۔' 
       });
     }
 

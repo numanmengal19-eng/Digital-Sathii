@@ -79,27 +79,17 @@ const AdminApp = {
             <p>Admin CMS Portal</p>
           </div>
 
-          <!-- Auth Switcher Tabs -->
-          <div style="display: flex; gap: 0.5rem; background: var(--bg-surface); padding: 4px; border-radius: var(--radius-md); margin-bottom: 1.5rem; border: 1px solid var(--border-subtle);">
-            <button id="tab-btn-login" type="button" onclick="AdminApp.switchAuthMode('login')" style="flex: 1; padding: 0.6rem; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; background: var(--accent-cyan); color: #070F2B; transition: var(--transition);">
-              <i class="fa-solid fa-right-to-bracket"></i> لاگ ان کریں
-            </button>
-            <button id="tab-btn-setpass" type="button" onclick="AdminApp.switchAuthMode('setpass')" style="flex: 1; padding: 0.6rem; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; background: transparent; color: var(--text-secondary); transition: var(--transition);">
-              <i class="fa-solid fa-key"></i> اصلی پاس ورڈ سیٹ کریں
-            </button>
-          </div>
-
-          <!-- 1. SIGN IN FORM -->
+          <!-- SECURE LOGIN FORM (No public password resetting) -->
           <form id="admin-login-form" onsubmit="AdminApp.handleLoginSubmit(event)">
             <div class="form-group">
               <label><i class="fa-solid fa-envelope"></i> ای میل یا یوزر نیم:</label>
-              <input type="text" id="admin-username" class="form-control" required placeholder="abidnuman64@gmail.com یا admin" value="abidnuman64@gmail.com" autofocus />
+              <input type="text" id="admin-username" class="form-control" required placeholder="ای میل یا یوزر نیم درج کریں" autofocus />
             </div>
 
             <div class="form-group">
               <label><i class="fa-solid fa-lock"></i> پاس ورڈ (Password):</label>
               <div style="position: relative;">
-                <input type="password" id="admin-password" class="form-control" required placeholder="اپنا پاس ورڈ درج کریں" />
+                <input type="password" id="admin-password" class="form-control" required placeholder="اپنا ایڈمن پاس ورڈ درج کریں" />
                 <button type="button" onclick="AdminApp.togglePasswordVisibility('admin-password', 'pass-eye-icon-1')" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--accent-cyan); cursor: pointer; font-size: 1rem;" title="پاس ورڈ دیکھیں">
                   <i id="pass-eye-icon-1" class="fa-solid fa-eye"></i>
                 </button>
@@ -110,52 +100,6 @@ const AdminApp = {
               <button type="submit" class="btn btn-primary btn-block">
                 <i class="fa-solid fa-right-to-bracket"></i> لاگ ان کریں (Sign In)
               </button>
-            </div>
-
-            <div style="text-align: center; margin-top: 1rem; font-size: 0.85rem;">
-              <span style="color: var(--text-muted);">پاس ورڈ یاد نہیں یا نیا لگانا ہے؟</span><br/>
-              <a href="javascript:void(0)" onclick="AdminApp.switchAuthMode('setpass')" style="color: var(--accent-cyan); font-weight: 700; text-decoration: underline;">
-                👉 یہاں کلک کر کے اپنا اصلی پاس ورڈ خود سیٹ کریں
-              </a>
-            </div>
-          </form>
-
-          <!-- 2. SET REAL PASSWORD FORM -->
-          <form id="admin-setpass-form" onsubmit="AdminApp.handleSetPasswordSubmit(event)" style="display: none;">
-            <div style="background: rgba(0, 229, 255, 0.08); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 1.25rem; font-size: 0.82rem; line-height: 1.5; color: var(--text-secondary);">
-              <i class="fa-solid fa-circle-info text-cyan"></i> اپنا ای میل درج کریں اور جو پاس ورڈ آپ رکھنا چاہتے ہیں وہ یہاں لکھیں۔ یہ سسٹم میں فوری طور پر فعال ہو جائے گا!
-            </div>
-
-            <div class="form-group">
-              <label><i class="fa-solid fa-envelope"></i> آپ کا ای میل (Email Address):</label>
-              <input type="email" id="setpass-email" class="form-control" required value="abidnuman64@gmail.com" />
-            </div>
-
-            <div class="form-group">
-              <label><i class="fa-solid fa-key"></i> نیا اصلی پاس ورڈ (New Password):</label>
-              <div style="position: relative;">
-                <input type="password" id="setpass-password" class="form-control" required minlength="4" placeholder="جو پاس ورڈ آپ رکھنا چاہتے ہیں..." />
-                <button type="button" onclick="AdminApp.togglePasswordVisibility('setpass-password', 'pass-eye-icon-2')" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--accent-cyan); cursor: pointer; font-size: 1rem;" title="پاس ورڈ دیکھیں">
-                  <i id="pass-eye-icon-2" class="fa-solid fa-eye"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label><i class="fa-solid fa-check-double"></i> پاس ورڈ دوبارہ درج کریں (Confirm Password):</label>
-              <input type="password" id="setpass-confirm" class="form-control" required minlength="4" placeholder="دوبارہ وہی پاس ورڈ درج کریں..." />
-            </div>
-
-            <div class="login-actions" style="margin-top: 1.25rem;">
-              <button type="submit" class="btn btn-success btn-block">
-                <i class="fa-solid fa-floppy-disk"></i> اصلی پاس ورڈ محفوظ کریں اور لاگ ان کریں
-              </button>
-            </div>
-
-            <div style="text-align: center; margin-top: 1rem; font-size: 0.85rem;">
-              <a href="javascript:void(0)" onclick="AdminApp.switchAuthMode('login')" style="color: var(--text-muted); text-decoration: none;">
-                <i class="fa-solid fa-arrow-left"></i> واپس لاگ ان پر جائیں
-              </a>
             </div>
           </form>
 
@@ -169,29 +113,6 @@ const AdminApp = {
     `;
   },
 
-  switchAuthMode(mode) {
-    const loginForm = document.getElementById('admin-login-form');
-    const setPassForm = document.getElementById('admin-setpass-form');
-    const tabLogin = document.getElementById('tab-btn-login');
-    const tabSetPass = document.getElementById('tab-btn-setpass');
-
-    if (mode === 'setpass') {
-      loginForm.style.display = 'none';
-      setPassForm.style.display = 'block';
-      tabSetPass.style.background = 'var(--accent-cyan)';
-      tabSetPass.style.color = '#070F2B';
-      tabLogin.style.background = 'transparent';
-      tabLogin.style.color = 'var(--text-secondary)';
-    } else {
-      setPassForm.style.display = 'none';
-      loginForm.style.display = 'block';
-      tabLogin.style.background = 'var(--accent-cyan)';
-      tabLogin.style.color = '#070F2B';
-      tabSetPass.style.background = 'transparent';
-      tabSetPass.style.color = 'var(--text-secondary)';
-    }
-  },
-
   togglePasswordVisibility(inputId, iconId) {
     const p = document.getElementById(inputId);
     const icon = document.getElementById(iconId);
@@ -202,43 +123,6 @@ const AdminApp = {
     } else {
       p.type = 'password';
       if (icon) icon.className = 'fa-solid fa-eye';
-    }
-  },
-
-  async handleSetPasswordSubmit(e) {
-    e.preventDefault();
-    const email = document.getElementById('setpass-email')?.value?.trim();
-    const password = document.getElementById('setpass-password')?.value;
-    const confirm = document.getElementById('setpass-confirm')?.value;
-
-    if (!email || !password) {
-      alert('براہِ کرم ای میل اور پاس ورڈ دونوں درج کریں۔');
-      return;
-    }
-
-    if (password !== confirm) {
-      alert('دونوں پاس ورڈ آپس میں مماثلت نہیں رکھتے! براہِ کرم دوبارہ چیک کریں۔');
-      return;
-    }
-
-    try {
-      const res = await fetch('/api/admin/set-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.error || 'پاس ورڈ سیٹ کرنے میں خرابی ہوئی۔');
-        return;
-      }
-
-      alert(data.message || 'پاس ورڈ محفوظ ہو گیا!');
-      // Auto login with the newly set password right away!
-      await this.login(email, password);
-    } catch (err) {
-      alert('خرابی: ' + err.message);
     }
   },
 

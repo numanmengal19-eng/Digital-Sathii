@@ -20,8 +20,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
   <!-- Custom Stylesheets -->
-  <link rel="stylesheet" href="/css/style.css" />
-  <link rel="stylesheet" href="/css/admin.css" />
+  <link rel="stylesheet" href="/css/style.css?v=20261027_4" />
+  <link rel="stylesheet" href="/css/admin.css?v=20261027_4" />
 
   <!-- Adsterra Social Bar / Floating In-Page Push (Opens automatically on website load) -->
   <script type="text/javascript" src="//bauval.org/14/8b59c6d263fdf861fd720feac07f11de"></script>
@@ -763,10 +763,29 @@
     </div>
   </div>
 
+  <!-- Floating Social Bar Notification (Guaranteed on Mobile and Desktop) -->
+  <aside class="sathi-social-bar" id="sathi-social-bar" onclick="if (window.SmartlinkAdEngine) window.SmartlinkAdEngine.openAd(window.SmartlinkAdEngine.getUrl());">
+    <div class="sathi-social-bar-icon">
+      <i class="fa-solid fa-bell"></i>
+    </div>
+    <div class="sathi-social-bar-content">
+      <div class="sathi-social-bar-title">
+        <span>ڈیجیٹل ساتھی الرٹ</span>
+        <span class="sathi-social-bar-badge">اہم اعلان</span>
+      </div>
+      <div class="sathi-social-bar-text">
+        نئی تصدیق شدہ ایپس اور روزمرہ ٹولز دیکھنے کے لیے ٹیپ کریں
+      </div>
+    </div>
+    <button type="button" class="sathi-social-bar-close" title="بند کریں" aria-label="بند کریں" onclick="event.stopPropagation(); document.getElementById('sathi-social-bar').style.display='none';">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </aside>
+
   <!-- JavaScript Modules -->
-  <script src="/js/i18n.js"></script>
-  <script src="/js/tools.js"></script>
-  <script src="/js/admin.js"></script>
-  <script src="/js/app.js"></script>
+  <script src="/js/i18n.js?v=20261027_4"></script>
+  <script src="/js/tools.js?v=20261027_4"></script>
+  <script src="/js/admin.js?v=20261027_4"></script>
+  <script src="/js/app.js?v=20261027_4"></script>
 </body>
 </html>

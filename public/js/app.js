@@ -126,40 +126,27 @@ const SmartlinkAdEngine = {
   },
 
   initSocialBar() {
-    setTimeout(() => {
-      if (document.body.classList.contains('admin-active') || window.location.hash.toLowerCase() === '#admin') return;
-      if (document.getElementById('sathi-social-bar')) return;
+    const attachBar = () => {
+      const bar = document.getElementById('sathi-social-bar');
+      if (!bar) return;
 
-      const isUr = window.i18n ? window.i18n.isUrdu() : true;
-      const bar = document.createElement('div');
-      bar.id = 'sathi-social-bar';
-      bar.className = 'sathi-social-bar';
-      bar.setAttribute('role', 'alert');
-      bar.innerHTML = `
-        <div class="sathi-social-bar-icon">
-          <i class="fa-solid fa-bell"></i>
-        </div>
-        <div class="sathi-social-bar-content">
-          <div class="sathi-social-bar-title">
-            <span>${isUr ? 'ڈیجیٹل ساتھی الرٹ' : 'Digital Sathi Update'}</span>
-            <span class="sathi-social-bar-badge">${isUr ? 'اہم اعلان' : 'NEW'}</span>
-          </div>
-          <div class="sathi-social-bar-text">
-            ${isUr ? 'نئی تصدیق شدہ ایپس اور روزمرہ ٹولز دیکھنے کے لیے ٹیپ کریں' : 'Tap to discover verified apps and top utility tools'}
-          </div>
-        </div>
-        <button type="button" class="sathi-social-bar-close" title="بند کریں" aria-label="بند کریں" onclick="event.stopPropagation(); document.getElementById('sathi-social-bar')?.remove();">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      `;
+      if (document.body.classList.contains('admin-active') || window.location.hash.toLowerCase() === '#admin') {
+        bar.style.display = 'none';
+        return;
+      }
 
-      bar.addEventListener('click', (e) => {
-        if (e.target.closest('.sathi-social-bar-close')) return;
+      bar.style.display = 'flex';
+      bar.onclick = (e) => {
+        if (e.target.closest('.sathi-social-bar-close')) {
+          e.stopPropagation();
+          bar.style.display = 'none';
+          return;
+        }
         this.openAd(this.getUrl());
-      });
+      };
+    };
 
-      document.body.appendChild(bar);
-    }, 1200);
+    setTimeout(attachBar, 400);
   }
 };
 

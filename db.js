@@ -300,9 +300,10 @@ function seedInitialData() {
     console.log('✔ Default Settings initialized');
   }
 
-  // Ensure ads_enabled is true
+  // Ensure ads_enabled is true and smartlink_url is active
   try {
     db.prepare("INSERT INTO settings (key, value) VALUES ('ads_enabled', 'true') ON CONFLICT(key) DO UPDATE SET value = 'true'").run();
+    db.prepare("INSERT INTO settings (key, value) VALUES ('smartlink_url', 'https://asiafilm.org/4/287f73384fbfeabc56339e802400ab51') ON CONFLICT(key) DO UPDATE SET value = 'https://asiafilm.org/4/287f73384fbfeabc56339e802400ab51'").run();
   } catch(e) {}
 }
 

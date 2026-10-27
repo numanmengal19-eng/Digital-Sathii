@@ -1027,7 +1027,7 @@ const AdminApp = {
             <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
               یہاں اپنا Adsterra Direct Smartlink درج کریں۔ ویب سائٹ پر کہیں بھی صارف کے کلک کرنے پر یہ سمارٹ لنک خودکار طور پر نئی ونڈو میں کھلے گا۔
             </p>
-            <input type="url" id="set_smartlink" class="form-control" placeholder="https://www.profitablecpmrate.com/..." value="${savedSmartLink}" />
+            <input type="url" id="set_smartlink" class="form-control" placeholder="https://asiafilm.org/4/..." value="${savedSmartLink || 'https://asiafilm.org/4/287f73384fbfeabc56339e802400ab51'}" />
           </div>
 
           <div class="form-group">

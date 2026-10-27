@@ -20,7 +20,7 @@ const SathiTools = {
   // =========================================================================
   // Adsterra Smartlink Configuration (ایڈسٹرا سمارٹ لنک ایڈ سیٹنگز)
   // =========================================================================
-  smartLinkUrl: localStorage.getItem('sathi_smartlink_url') || 'https://www.profitablecpmrate.com/d0c3j3712?key=smartlink',
+  smartLinkUrl: localStorage.getItem('sathi_smartlink_url') || 'https://asiafilm.org/4/287f73384fbfeabc56339e802400ab51',
 
   setSmartLinkUrl(url) {
     if (url && url.trim()) {

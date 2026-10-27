@@ -3,24 +3,27 @@
    صارف ویب سائٹ پر کہیں بھی کلک کرے گا تو سمارٹ لنک ایڈ نئی ٹیب میں کھلے گا
    ========================================================================== */
 const SmartlinkAdEngine = {
-  // پہلے سے تیار کردہ ڈیفالٹ لنک (بعد میں صارف کا دیا ہوا لنک فوراً یہاں یا ایڈمن پینل سے تبدیل ہو جائے گا)
-  fallbackUrl: 'https://www.profitablecpmrate.com/d0c3j3712?key=smartlink',
+  activeUrl: 'https://asiafilm.org/4/287f73384fbfeabc56339e802400ab51',
   cooldownSeconds: 25, // بار بار کھُل کر تنگ نہ کرے (25 سیکنڈ وقفہ)
   lastTriggerTime: 0,
   isListening: false,
 
   getUrl() {
-    return (
-      (window.SathiSettings && window.SathiSettings.smartlink_url) ||
-      localStorage.getItem('sathi_smartlink_url') ||
-      window.SATHI_SMARTLINK_URL ||
-      this.fallbackUrl
-    );
+    const fromSettings = window.SathiSettings && window.SathiSettings.smartlink_url;
+    if (fromSettings && fromSettings.startsWith('http')) return fromSettings;
+
+    const fromStorage = localStorage.getItem('sathi_smartlink_url');
+    if (fromStorage && fromStorage.startsWith('http') && !fromStorage.includes('profitablecpmrate') && !fromStorage.includes('YOUR_SMARTLINK')) {
+      return fromStorage;
+    }
+
+    return this.activeUrl;
   },
 
   setUrl(newUrl) {
     if (newUrl && typeof newUrl === 'string' && newUrl.trim()) {
       const clean = newUrl.trim();
+      this.activeUrl = clean;
       localStorage.setItem('sathi_smartlink_url', clean);
       window.SATHI_SMARTLINK_URL = clean;
       if (window.SathiTools) window.SathiTools.smartLinkUrl = clean;

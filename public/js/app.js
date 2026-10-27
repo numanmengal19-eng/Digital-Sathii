@@ -83,10 +83,14 @@ const App = {
       if (appsRes.success) {
         let loadedApps = appsRes.apps || [];
         try {
-          const localCustom = JSON.parse(localStorage.getItem('sathi_custom_apps') || '[]');
-          if (Array.isArray(localCustom) && localCustom.length > 0) {
-            const localIds = new Set(localCustom.map(a => a.id));
-            loadedApps = [...localCustom, ...loadedApps.filter(a => !localIds.has(a.id))];
+          let localCustom = JSON.parse(localStorage.getItem('sathi_custom_apps') || '[]');
+          if (Array.isArray(localCustom)) {
+            localCustom = localCustom.filter(a => a && a.download_url && !a.download_url.includes('Sample') && !a.download_url.includes('sample'));
+            localStorage.setItem('sathi_custom_apps', JSON.stringify(localCustom));
+            if (localCustom.length > 0) {
+              const localIds = new Set(localCustom.map(a => a.id));
+              loadedApps = [...localCustom, ...loadedApps.filter(a => !localIds.has(a.id))];
+            }
           }
         } catch (e) {
           console.warn('Local apps sync error:', e);
@@ -210,7 +214,14 @@ const App = {
 
     const featured = this.apps.filter(a => a.is_featured || a.is_popular).slice(0, 4);
     if (featured.length === 0) {
-      container.innerHTML = `<p class="no-records">${window.i18n.t('no_results')}</p>`;
+      const isUr = window.i18n && window.i18n.isUrdu();
+      container.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem; background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px dashed var(--border-subtle);">
+          <i class="fa-solid fa-sparkles text-cyan" style="font-size: 2rem; margin-bottom: 0.8rem; display: block;"></i>
+          <h4 style="margin-bottom: 0.4rem;">${isUr ? 'نمایاں ایپس جلد شامل کی جائیں گی' : 'Featured Apps Coming Soon'}</h4>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">${isUr ? 'ایڈمن پینل سے تصدیق شدہ ایپس پبلش ہوتے ہی یہاں خودکار نظر آئیں گی۔' : 'Apps published by admin will appear here automatically.'}</p>
+        </div>
+      `;
       return;
     }
 
@@ -221,7 +232,19 @@ const App = {
     const container = document.getElementById('new-apps-grid');
     if (!container) return;
 
-    const newApps = this.apps.filter(a => a.is_new || a.id > 4).slice(0, 4);
+    if (this.apps.length === 0) {
+      const isUr = window.i18n && window.i18n.isUrdu();
+      container.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem; background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px dashed var(--border-subtle);">
+          <i class="fa-solid fa-mobile-screen-button text-cyan" style="font-size: 2rem; margin-bottom: 0.8rem; display: block;"></i>
+          <h4 style="margin-bottom: 0.4rem;">${isUr ? 'نئی ایپس جلد دستیاب ہوں گی' : 'New Releases Coming Soon'}</h4>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">${isUr ? 'ایڈمن پینل سے اصلی ایپس پبلش ہوتے ہی فوری یہاں شامل ہو جائیں گی۔' : 'New apps published will be listed here.'}</p>
+        </div>
+      `;
+      return;
+    }
+
+    const newApps = [...this.apps].reverse().slice(0, 4);
     container.innerHTML = newApps.map(a => this.renderAppCard(a)).join('');
   },
 
@@ -267,11 +290,13 @@ const App = {
     }
 
     if (filtered.length === 0) {
+      const isUr = window.i18n && window.i18n.isUrdu();
       container.innerHTML = `
-        <div class="empty-store-box">
-          <i class="fa-solid fa-box-open"></i>
-          <p>${window.i18n.isUrdu() ? 'معذرت، اس معیار کے مطابق کوئی ایپ نہیں ملی۔' : 'No apps found matching your search criteria.'}</p>
-          <button class="btn btn-outline-cyan btn-sm" onclick="App.resetFilters()">${window.i18n.isUrdu() ? 'تمام ایپس دیکھیں' : 'Show All Apps'}</button>
+        <div class="empty-store-box" style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem;">
+          <i class="fa-solid fa-box-open" style="font-size: 2.5rem; color: var(--accent-cyan); margin-bottom: 1rem; opacity: 0.8; display: block;"></i>
+          <h3 style="margin-bottom: 0.5rem;">${isUr ? 'ایپ اسٹور تیار ہے!' : 'App Store Ready!'}</h3>
+          <p style="color: var(--text-secondary); max-width: 500px; margin: 0 auto 1.5rem;">${isUr ? 'تمام فرضی ایپس ہٹا دی گئی ہیں۔ آپ اپنے ایڈمن پینل (/admin) سے جو بھی اصلی ایپ پبلش کریں گے، وہ فوری طور پر یہاں ڈاؤن لوڈ کے لیے دستیاب ہو جائے گی۔' : 'Dummy apps have been removed. Any official apps you publish from the admin panel (/admin) will immediately appear here for download.'}</p>
+          <a href="#admin" class="btn btn-outline-cyan btn-sm"><i class="fa-solid fa-plus"></i> ${isUr ? 'ایڈمن سے نئی ایپ شامل کریں' : 'Add App from Admin'}</a>
         </div>
       `;
       return;

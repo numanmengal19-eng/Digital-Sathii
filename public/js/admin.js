@@ -490,12 +490,16 @@ const AdminApp = {
     try {
       const res = await fetch('/api/admin/apps', { headers: this.getHeaders() });
       const data = await res.json();
-      let appsList = data.apps || [];
+      let appsList = (data.apps || []).filter(a => a && a.download_url && !a.download_url.includes('Sample') && !a.download_url.includes('sample'));
       try {
-        const localCustom = JSON.parse(localStorage.getItem('sathi_custom_apps') || '[]');
-        if (Array.isArray(localCustom) && localCustom.length > 0) {
-          const localIds = new Set(localCustom.map(a => a.id));
-          appsList = [...localCustom, ...appsList.filter(a => !localIds.has(a.id))];
+        let localCustom = JSON.parse(localStorage.getItem('sathi_custom_apps') || '[]');
+        if (Array.isArray(localCustom)) {
+          localCustom = localCustom.filter(a => a && a.download_url && !a.download_url.includes('Sample') && !a.download_url.includes('sample'));
+          localStorage.setItem('sathi_custom_apps', JSON.stringify(localCustom));
+          if (localCustom.length > 0) {
+            const localIds = new Set(localCustom.map(a => a.id));
+            appsList = [...localCustom, ...appsList.filter(a => !localIds.has(a.id))];
+          }
         }
       } catch (e) {
         console.warn('Local apps sync error:', e);

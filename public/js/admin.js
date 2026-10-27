@@ -1077,6 +1077,8 @@ const AdminApp = {
       const res = await fetch('/api/admin/settings', { headers: this.getHeaders() });
       const { settings } = await res.json();
 
+      const savedSmartLink = localStorage.getItem('sathi_smartlink_url') || '';
+
       container.innerHTML = `
         <form class="admin-settings-form" onsubmit="AdminApp.saveSettings(event)">
           <div class="form-row">
@@ -1103,6 +1105,18 @@ const AdminApp = {
             <label>سیکیورٹی اعلان و ٹکر میسج (Urdu):</label>
             <input type="text" id="set_ann_ur" class="form-control" value="${settings.announcement_text_ur || ''}" />
           </div>
+
+          <!-- Adsterra Smartlink Configuration -->
+          <div class="form-group" style="background: rgba(0, 229, 255, 0.05); border: 1.5px solid var(--accent-cyan); border-radius: 8px; padding: 1rem; margin: 1.25rem 0;">
+            <label style="color: var(--accent-cyan); font-weight: 700; font-size: 0.95rem;">
+              <i class="fa-solid fa-link"></i> ایڈسٹرا سمارٹ لنک ایڈ (Adsterra Smartlink URL):
+            </label>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+              یہاں اپنا Adsterra Direct Smartlink پیسٹ کریں (مثال: https://www.profitablecpmrate.com/... )۔ یہ آن لائن ٹولز میں کارآمد اشتہاری لنکس کے طور پر کام کرے گا۔
+            </p>
+            <input type="url" id="set_smartlink" class="form-control" placeholder="https://www.profitablecpmrate.com/..." value="${savedSmartLink}" />
+          </div>
+
           <div class="form-group">
             <label>گوگل ایڈسینس یا اشتہارات فعال کریں (Enable Ad Slots):</label>
             <select id="set_ads" class="form-control">
@@ -1120,6 +1134,14 @@ const AdminApp = {
 
   async saveSettings(e) {
     e.preventDefault();
+
+    // Save Smartlink locally and in tools engine
+    const smartLinkVal = document.getElementById('set_smartlink')?.value?.trim();
+    if (smartLinkVal) {
+      localStorage.setItem('sathi_smartlink_url', smartLinkVal);
+      if (window.SathiTools) window.SathiTools.setSmartLinkUrl(smartLinkVal);
+    }
+
     const payload = {
       settings: {
         site_name_ur: document.getElementById('set_name_ur')?.value,
@@ -1136,7 +1158,7 @@ const AdminApp = {
       body: JSON.stringify(payload)
     });
     if (res.ok) {
-      alert('ترتیبات کامیابی سے محفوظ ہو گئیں۔');
+      alert('ترتیبات اور سمارٹ لنک ایڈ کامیابی سے محفوظ ہو گئے ہیں۔');
     }
   },
 

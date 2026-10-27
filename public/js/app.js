@@ -688,6 +688,7 @@ const App = {
     const mainWebsite = document.getElementById('main-website-content');
 
     if (isAdmin) {
+      document.body.classList.add('admin-active');
       if (mainWebsite) mainWebsite.style.display = 'none';
       if (adminContainer) {
         adminContainer.style.display = 'block';
@@ -697,6 +698,7 @@ const App = {
       }
       window.scrollTo(0, 0);
     } else {
+      document.body.classList.remove('admin-active');
       if (adminContainer) adminContainer.style.display = 'none';
       if (mainWebsite) mainWebsite.style.display = 'block';
 

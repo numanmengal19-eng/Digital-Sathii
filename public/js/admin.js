@@ -139,48 +139,55 @@ const AdminApp = {
 
     adminContainer.innerHTML = `
       <div class="admin-dashboard-layout">
-        <!-- Sidebar -->
-        <aside class="admin-sidebar">
+        <!-- Mobile Sidebar Backdrop -->
+        <div class="admin-sidebar-backdrop" id="admin-sidebar-backdrop" onclick="AdminApp.closeSidebar()"></div>
+
+        <!-- Sidebar (Slide-out drawer on mobile) -->
+        <aside class="admin-sidebar" id="admin-sidebar">
           <div class="admin-sidebar-header">
             <img src="/assets/logo.jpg" alt="Digital Sathi" class="admin-logo-img" onerror="this.style.display='none'" />
             <div class="admin-logo-text">
               <h3>Digital Sathi</h3>
               <span>Admin Console</span>
             </div>
+            <!-- Mobile Close Button -->
+            <button type="button" class="admin-sidebar-close-btn" onclick="AdminApp.closeSidebar()" aria-label="Close sidebar menu">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
           </div>
 
           <div class="admin-user-pill">
             <div class="user-avatar"><i class="fa-solid fa-user-shield"></i></div>
             <div class="user-info">
               <strong>${adminUser?.name || 'Super Admin'}</strong>
-              <small>${adminUser?.email || 'admin@digitalsathi.pk'}</small>
+              <small title="${adminUser?.email || 'admin@digitalsathi.pk'}">${adminUser?.email || 'admin@digitalsathi.pk'}</small>
             </div>
           </div>
 
           <nav class="admin-nav">
             <button class="admin-nav-item active" onclick="AdminApp.switchTab('overview')">
-              <i class="fa-solid fa-gauge-high"></i> جائزہ و شماریات
+              <i class="fa-solid fa-gauge-high"></i> <span>جائزہ و شماریات</span>
             </button>
             <button class="admin-nav-item" onclick="AdminApp.switchTab('apps')">
-              <i class="fa-solid fa-mobile-screen-button"></i> ایپس کا انتظام (Apps)
+              <i class="fa-solid fa-mobile-screen-button"></i> <span>ایپس کا انتظام (Apps)</span>
             </button>
             <button class="admin-nav-item" onclick="AdminApp.switchTab('files')">
-              <i class="fa-solid fa-file-pdf"></i> فائلیں و دستاویزات (Files)
+              <i class="fa-solid fa-file-pdf"></i> <span>فائلیں و دستاویزات (Files)</span>
             </button>
             <button class="admin-nav-item" onclick="AdminApp.switchTab('inquiries')">
-              <i class="fa-solid fa-envelope-open-text"></i> سروس انکوائریز (Quotes)
+              <i class="fa-solid fa-envelope-open-text"></i> <span>سروس انکوائریز (Quotes)</span>
             </button>
             <button class="admin-nav-item" onclick="AdminApp.switchTab('messages')">
-              <i class="fa-solid fa-comments"></i> رابطہ پیغامات (Contact)
+              <i class="fa-solid fa-comments"></i> <span>رابطہ پیغامات (Contact)</span>
             </button>
             <button class="admin-nav-item" onclick="AdminApp.switchTab('broken_links')">
-              <i class="fa-solid fa-triangle-exclamation"></i> خراب لنکس رپورٹس
+              <i class="fa-solid fa-triangle-exclamation"></i> <span>خراب لنکس رپورٹس</span>
             </button>
             <button class="admin-nav-item" onclick="AdminApp.switchTab('settings')">
-              <i class="fa-solid fa-sliders"></i> ویب سائٹ ترتیبات
+              <i class="fa-solid fa-sliders"></i> <span>ویب سائٹ ترتیبات</span>
             </button>
             <button class="admin-nav-item" onclick="AdminApp.switchTab('security')">
-              <i class="fa-solid fa-key"></i> پاس ورڈ تبدیل کریں
+              <i class="fa-solid fa-key"></i> <span>پاس ورڈ تبدیل کریں</span>
             </button>
           </nav>
 
@@ -197,13 +204,18 @@ const AdminApp = {
         <!-- Main Panel Content -->
         <main class="admin-main">
           <header class="admin-topbar">
-            <div class="topbar-title" id="admin-tab-title">ڈیش بورڈ جائزہ</div>
+            <div class="topbar-left-cluster">
+              <button type="button" class="admin-hamburger-btn" onclick="AdminApp.toggleSidebar()" aria-label="Toggle navigation menu">
+                <i class="fa-solid fa-bars"></i>
+              </button>
+              <div class="topbar-title" id="admin-tab-title">ڈیش بورڈ جائزہ</div>
+            </div>
             <div class="topbar-actions">
               <button class="btn btn-sm btn-primary" onclick="AdminApp.openAddAppModal()">
-                <i class="fa-solid fa-plus"></i> نئی ایپ شامل کریں
+                <i class="fa-solid fa-plus"></i> <span class="btn-text-responsive">نئی ایپ</span>
               </button>
-              <button class="btn btn-sm btn-secondary" onclick="AdminApp.refreshCurrentTab()">
-                <i class="fa-solid fa-rotate"></i> ریفریش
+              <button class="btn btn-sm btn-secondary" onclick="AdminApp.refreshCurrentTab()" title="ریفریش">
+                <i class="fa-solid fa-rotate"></i> <span class="btn-text-responsive">ریفریش</span>
               </button>
             </div>
           </header>
@@ -219,6 +231,22 @@ const AdminApp = {
     this.switchTab('overview');
   },
 
+  toggleSidebar() {
+    const sb = document.getElementById('admin-sidebar');
+    const bd = document.getElementById('admin-sidebar-backdrop');
+    if (sb) sb.classList.toggle('active');
+    if (bd) bd.classList.toggle('active');
+    document.body.classList.toggle('sidebar-drawer-open');
+  },
+
+  closeSidebar() {
+    const sb = document.getElementById('admin-sidebar');
+    const bd = document.getElementById('admin-sidebar-backdrop');
+    if (sb) sb.classList.remove('active');
+    if (bd) bd.classList.remove('active');
+    document.body.classList.remove('sidebar-drawer-open');
+  },
+
   async fetchCategories() {
     try {
       const res = await fetch('/api/categories');
@@ -230,6 +258,7 @@ const AdminApp = {
   },
 
   async switchTab(tab) {
+    this.closeSidebar();
     this.currentTab = tab;
     document.querySelectorAll('.admin-nav-item').forEach(el => el.classList.remove('active'));
     const btn = Array.from(document.querySelectorAll('.admin-nav-item')).find(b => b.getAttribute('onclick')?.includes(tab));

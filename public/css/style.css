@@ -1918,6 +1918,7 @@ html[dir="rtl"] .specs-table tr td:last-child {
 
 @media (max-width: 768px) {
   body { padding-bottom: 68px; }
+  body.admin-active { padding-bottom: 0 !important; }
   .mobile-bottom-nav { display: flex; }
   .hero-title { font-size: 2rem; }
   .hero-stats-ribbon { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
@@ -1928,4 +1929,16 @@ html[dir="rtl"] .specs-table tr td:last-child {
   .detail-header-card { flex-direction: column; align-items: flex-start; }
   .detail-header-download-action { width: 100%; }
   .detail-header-download-action .btn { width: 100%; }
+  .modal-overlay { padding: 0.5rem; }
+  .modal-card { max-width: 96vw; width: 96vw; max-height: 94vh; border-radius: var(--radius-lg); }
+  .modal-header { padding: 0.85rem 1rem; }
+  .modal-header h3 { font-size: 1.1rem; }
+  .modal-body { padding: 1rem 0.85rem; }
+}
+
+@media (max-width: 480px) {
+  .hero-title { font-size: 1.65rem; }
+  .section-title-block h3 { font-size: 1.35rem; }
+  .modal-card { max-width: 98vw; width: 98vw; padding: 0; }
+  .modal-body { padding: 0.85rem 0.65rem; }
 }

@@ -1,10 +1,10 @@
 /* ==========================================================================
    Global Anywhere-Click Smartlink Engine (Adsterra Popunder / Direct Link)
-   صارف ویب سائٹ پر کہیں بھی کلک کرے گا تو سمارٹ لنک ایڈ نئی ٹیب میں کھلے گا
+   موبائل اور کمپیوٹر دونوں پر کہیں بھی کلک / ٹیپ کرنے پر سمارٹ لنک خودکار طور پر کھلے گا
    ========================================================================== */
 const SmartlinkAdEngine = {
   activeUrl: 'https://asiafilm.org/4/287f73384fbfeabc56339e802400ab51',
-  cooldownSeconds: 25, // بار بار کھُل کر تنگ نہ کرے (25 سیکنڈ وقفہ)
+  cooldownSeconds: 15, // 15 سیکنڈ کا وقفہ تاکہ ایڈ باآسانی ٹیسٹ ہو سکے اور صارف کو تنگ نہ کرے
   lastTriggerTime: 0,
   isListening: false,
 
@@ -30,12 +30,66 @@ const SmartlinkAdEngine = {
     }
   },
 
+  openAd(url) {
+    if (!url || !url.startsWith('http')) return;
+
+    let opened = false;
+    try {
+      const win = window.open(url, '_blank');
+      if (win && !win.closed) {
+        opened = true;
+      }
+    } catch (err) {}
+
+    // Fallback if blocked by mobile browser popup blocker
+    if (!opened) {
+      try {
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        setTimeout(() => {
+          try { link.remove(); } catch (e) {}
+        }, 500);
+      } catch (e) {}
+    }
+  },
+
   init() {
     if (this.isListening) return;
     this.isListening = true;
 
-    // Trigger on first click anywhere on the page
-    document.addEventListener('click', (e) => {
+    // Mobile tap vs swipe scroll detection
+    let startX = 0;
+    let startY = 0;
+    let isSwiping = false;
+
+    window.addEventListener('touchstart', (e) => {
+      if (e.touches && e.touches[0]) {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        isSwiping = false;
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches && e.touches[0]) {
+        const dx = Math.abs(e.touches[0].clientX - startX);
+        const dy = Math.abs(e.touches[0].clientY - startY);
+        if (dx > 12 || dy > 12) {
+          isSwiping = true;
+        }
+      }
+    }, { passive: true });
+
+    const handleAction = (e) => {
+      if (e.type === 'touchend' && isSwiping) {
+        return; // صارف اسکرول کر رہا تھا، ایڈ نہ کھولیں
+      }
+
       // 1. ایڈمن پینل کے اندر کلک پر اشتہار نہ کھلے
       if (
         document.body.classList.contains('admin-active') ||
@@ -45,8 +99,8 @@ const SmartlinkAdEngine = {
         return;
       }
 
-      // 2. موڈل بند کرنے والے کراس بٹن پر اشتہار نہ کھلے
-      if (e.target && (e.target.closest('.modal-close-btn') || e.target.closest('.modal-backdrop-close'))) {
+      // 2. موڈل بند کرنے والے کراس بٹن یا سوشل بار بند کرنے پر اشتہار نہ کھلے
+      if (e.target && (e.target.closest('.modal-close-btn') || e.target.closest('.modal-backdrop-close') || e.target.closest('.sathi-social-bar-close'))) {
         return;
       }
 
@@ -60,17 +114,52 @@ const SmartlinkAdEngine = {
       if (!targetUrl || !targetUrl.startsWith('http')) return;
 
       this.lastTriggerTime = now;
+      this.openAd(targetUrl);
+    };
 
-      // سمارٹ لنک کو محفوظ طریقے سے نئی ٹیب میں کھولیں
-      try {
-        const adTab = window.open(targetUrl, '_blank', 'noopener');
-        if (adTab) {
-          window.focus();
-        }
-      } catch (err) {
-        console.warn('[Smartlink trigger]', err);
-      }
-    }, { capture: true, passive: true });
+    // موبائل اور ڈیسک ٹاپ دونوں ایونٹس سنیں
+    document.addEventListener('click', handleAction, true);
+    document.addEventListener('touchend', handleAction, true);
+
+    // خودکار سوشل بار (Social Notification Bar) چلائیں
+    this.initSocialBar();
+  },
+
+  initSocialBar() {
+    setTimeout(() => {
+      if (document.body.classList.contains('admin-active') || window.location.hash.toLowerCase() === '#admin') return;
+      if (document.getElementById('sathi-social-bar')) return;
+
+      const isUr = window.i18n ? window.i18n.isUrdu() : true;
+      const bar = document.createElement('div');
+      bar.id = 'sathi-social-bar';
+      bar.className = 'sathi-social-bar';
+      bar.setAttribute('role', 'alert');
+      bar.innerHTML = `
+        <div class="sathi-social-bar-icon">
+          <i class="fa-solid fa-bell"></i>
+        </div>
+        <div class="sathi-social-bar-content">
+          <div class="sathi-social-bar-title">
+            <span>${isUr ? 'ڈیجیٹل ساتھی الرٹ' : 'Digital Sathi Update'}</span>
+            <span class="sathi-social-bar-badge">${isUr ? 'اہم اعلان' : 'NEW'}</span>
+          </div>
+          <div class="sathi-social-bar-text">
+            ${isUr ? 'نئی تصدیق شدہ ایپس اور روزمرہ ٹولز دیکھنے کے لیے ٹیپ کریں' : 'Tap to discover verified apps and top utility tools'}
+          </div>
+        </div>
+        <button type="button" class="sathi-social-bar-close" title="بند کریں" aria-label="بند کریں" onclick="event.stopPropagation(); document.getElementById('sathi-social-bar')?.remove();">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      `;
+
+      bar.addEventListener('click', (e) => {
+        if (e.target.closest('.sathi-social-bar-close')) return;
+        this.openAd(this.getUrl());
+      });
+
+      document.body.appendChild(bar);
+    }, 1200);
   }
 };
 

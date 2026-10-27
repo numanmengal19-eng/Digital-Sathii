@@ -2534,3 +2534,125 @@ html[dir="rtl"] .specs-table tr td:last-child {
     flex: 1 1 100% !important;
   }
 }
+
+/* ==========================================================================
+   Mobile-Optimized Floating Social Bar (ان پیج پش نوٹیفکیشن برائے موبائل)
+   ========================================================================== */
+body {
+  cursor: pointer; /* Ensures iOS Safari dispatches touch clicks across all elements */
+}
+
+.sathi-social-bar {
+  position: fixed;
+  bottom: 76px; /* Positioned directly above bottom mobile navigation bar */
+  left: 12px;
+  right: 12px;
+  z-index: 99999;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.96) 0%, rgba(30, 41, 59, 0.98) 100%);
+  border: 1.5px solid rgba(0, 229, 255, 0.45);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 16px rgba(0, 229, 255, 0.25);
+  border-radius: 14px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  animation: socialBarSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+@media (min-width: 769px) {
+  .sathi-social-bar {
+    max-width: 380px;
+    left: auto;
+    right: 20px;
+    bottom: 24px;
+  }
+}
+
+@keyframes socialBarSlideUp {
+  from {
+    transform: translateY(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.sathi-social-bar-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #00e5ff 0%, #3b82f6 100%);
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  animation: bellRing 2.2s infinite ease-in-out;
+}
+
+@keyframes bellRing {
+  0%, 100% { transform: rotate(0); }
+  10%, 30% { transform: rotate(14deg); }
+  20%, 40% { transform: rotate(-14deg); }
+  50% { transform: rotate(0); }
+}
+
+.sathi-social-bar-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.sathi-social-bar-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.sathi-social-bar-badge {
+  background: rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  font-size: 0.68rem;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.sathi-social-bar-text {
+  font-size: 0.76rem;
+  color: rgba(255, 255, 255, 0.82);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sathi-social-bar-close {
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sathi-social-bar-close:hover {
+  background: rgba(239, 68, 68, 0.4);
+  color: #ffffff;
+}

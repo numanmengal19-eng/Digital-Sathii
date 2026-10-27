@@ -678,6 +678,28 @@ const App = {
         if (modal) modal.classList.remove('active');
       });
     });
+
+    // Close on clicking backdrop
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          overlay.classList.remove('active');
+        }
+      });
+    });
+
+    // Automatically sync modal-open class on body
+    const modalObserver = new MutationObserver(() => {
+      const activeModal = document.querySelector('.modal-overlay.active');
+      if (activeModal) {
+        document.body.classList.add('modal-open');
+      } else {
+        document.body.classList.remove('modal-open');
+      }
+    });
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      modalObserver.observe(overlay, { attributes: true, attributeFilter: ['class'] });
+    });
   },
 
   handleRouting() {

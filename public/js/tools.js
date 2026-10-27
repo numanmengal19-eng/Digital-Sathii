@@ -631,12 +631,12 @@ const SathiTools = {
 
     container.innerHTML = `
       <div class="tool-form-layout">
-        <div class="tool-tab-nav" style="margin-bottom: 1rem;">
+        <div class="tool-tab-nav">
           <button class="tool-tab-btn ${isTola ? 'active' : ''}" onclick="SathiTools.switchZakatUnit('tola')">
-            <i class="fa-solid fa-scale-balanced"></i> ${isUr ? 'تولہ یونٹ (پاکستانی معیار)' : 'Tola (Pakistani Standard)'}
+            <i class="fa-solid fa-scale-balanced"></i> ${isUr ? 'تولہ معیار' : 'Tola Unit'}
           </button>
           <button class="tool-tab-btn ${!isTola ? 'active' : ''}" onclick="SathiTools.switchZakatUnit('gram')">
-            <i class="fa-solid fa-weight-hanging"></i> ${isUr ? 'گرام یونٹ (Grams)' : 'Grams Unit'}
+            <i class="fa-solid fa-weight-hanging"></i> ${isUr ? 'گرام یونٹ' : 'Grams Unit'}
           </button>
         </div>
 
@@ -1486,11 +1486,19 @@ const SathiTools = {
     }
 
     modal.classList.add('active');
+    document.body.classList.add('modal-open');
+    if (!modal.dataset.boundBackdrop) {
+      modal.dataset.boundBackdrop = 'true';
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) this.closeModal();
+      });
+    }
   },
 
   closeModal() {
     const modal = document.getElementById('tool-modal');
     if (modal) modal.classList.remove('active');
+    document.body.classList.remove('modal-open');
   }
 };
 

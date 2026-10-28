@@ -73,6 +73,7 @@ const translations = {
     label_downloads: "ڈاؤن لوڈز:",
 
     // App Detail Modal
+    btn_explore_all_apps: "تمام ایپس دیکھیں",
     app_specs: "تکنیکی تفصیلات",
     spec_package: "پیکیج کا نام",
     spec_min_android: "کم از کم اینڈرائیڈ",
@@ -208,6 +209,7 @@ const translations = {
     label_downloads: "Downloads:",
 
     // App Detail Modal
+    btn_explore_all_apps: "Explore All Apps",
     app_specs: "Technical Specifications",
     spec_package: "Package Name",
     spec_min_android: "Requires Android",

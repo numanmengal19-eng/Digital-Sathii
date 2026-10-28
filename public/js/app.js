@@ -425,6 +425,61 @@ const App = {
     `;
   },
 
+  getDetailModalAdHtml() {
+    const isUr = window.i18n && window.i18n.isUrdu();
+    return `
+      <!-- Prominent In-Modal Sponsored Partner Ad Banner -->
+      <div class="modal-sponsored-banner-box" onclick="if (window.SmartlinkAdEngine) window.SmartlinkAdEngine.openAd(window.SmartlinkAdEngine.getUrl());" style="margin: 1.1rem 0; border-radius: var(--radius-md); overflow: hidden; border: 1.5px solid rgba(0, 229, 255, 0.4); background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(7, 15, 43, 0.95)); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.45); cursor: pointer; transition: transform 0.2s ease;">
+        <div style="background: rgba(0, 229, 255, 0.12); padding: 0.4rem 0.85rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0, 229, 255, 0.18);">
+          <span style="font-size: 0.75rem; font-weight: 800; color: #00E5FF; display: inline-flex; align-items: center; gap: 0.4rem;">
+            <i class="fa-solid fa-bolt text-cyan"></i> ${isUr ? 'اسپانسرڈ پارٹنر ایڈ (تجویز کردہ ٹول)' : 'SPONSORED PARTNER AD'}
+          </span>
+          <span style="background: #F59E0B; color: #000; font-size: 0.65rem; font-weight: 800; padding: 0.15rem 0.45rem; border-radius: 4px;">100% Free</span>
+        </div>
+        
+        <div style="padding: 0.9rem 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 0.85rem; flex: 1; min-width: 220px;">
+            <div style="width: 50px; height: 50px; border-radius: 12px; background: linear-gradient(135deg, #00E5FF, #3B82F6); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #070F2B; flex-shrink: 0; box-shadow: 0 4px 15px rgba(0, 229, 255, 0.4);">
+              <i class="fa-solid fa-shield-virus"></i>
+            </div>
+            <div>
+              <h5 style="margin: 0 0 0.25rem 0; font-size: 0.98rem; color: #ffffff; font-weight: 700; line-height: 1.3;">
+                ${isUr ? 'سپر وی پی این، ویڈیو ڈاؤنلوڈر اور اسپیڈ ٹول 2026' : 'Super VPN, Video Downloader & Speed Booster 2026'}
+              </h5>
+              <p style="margin: 0; font-size: 0.82rem; color: rgba(255, 255, 255, 0.78); line-height: 1.3;">
+                ${isUr ? 'تیز ترین ڈاؤن لوڈنگ، بلاک ویب سائٹس اور ویڈیوز کے لیے ایک کلک حل۔' : 'High speed connection & video downloading. Access any blocked content free.'}
+              </p>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary btn-sm" style="background: linear-gradient(135deg, #00E5FF, #2563EB); border: none; font-weight: 800; padding: 0.65rem 1.25rem; border-radius: 30px; box-shadow: 0 4px 14px rgba(0, 229, 255, 0.4); cursor: pointer; white-space: nowrap; font-size: 0.9rem;">
+            <i class="fa-solid fa-cloud-arrow-down"></i> ${isUr ? 'مفت انسٹال کریں ⚡' : 'Get Free ⚡'}
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  getMidContentAdHtml() {
+    const isUr = window.i18n && window.i18n.isUrdu();
+    return `
+      <!-- Mid-Content Adsterra / Sponsored Slot -->
+      <div class="modal-mid-ad-box" onclick="if (window.SmartlinkAdEngine) window.SmartlinkAdEngine.openAd(window.SmartlinkAdEngine.getUrl());" style="margin: 1.25rem 0; padding: 0.85rem 1rem; border-radius: var(--radius-md); background: linear-gradient(135deg, rgba(30, 27, 75, 0.85), rgba(15, 23, 42, 0.9)); border: 1px dashed rgba(245, 158, 11, 0.5); display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; cursor: pointer;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div style="width: 42px; height: 42px; border-radius: 10px; background: linear-gradient(135deg, #F59E0B, #EF4444); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: #fff;">
+            <i class="fa-solid fa-bolt-lightning"></i>
+          </div>
+          <div>
+            <div style="font-size: 0.7rem; color: #F59E0B; font-weight: 800; text-transform: uppercase;">${isUr ? 'تجویز کردہ پارٹنر' : 'SPONSORED'}</div>
+            <div style="font-size: 0.92rem; font-weight: 700; color: #FCD34D;">${isUr ? 'الٹرا فاسٹ کلاؤڈ مِرر اور بوسٹر 2026' : 'Ultra Fast Cloud Mirror & Booster 2026'}</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-xs" style="background: #F59E0B; color: #000; font-weight: 800; border: none; border-radius: 20px; padding: 0.5rem 1rem;">
+          <i class="fa-solid fa-download"></i> ${isUr ? 'ڈاؤن لوڈ کریں' : 'Download Free'}
+        </button>
+      </div>
+    `;
+  },
+
   renderFeaturedApps() {
     const container = document.getElementById('featured-apps-grid');
     if (!container) return;
@@ -624,6 +679,8 @@ const App = {
         </div>
       </div>
 
+      ${this.getDetailModalAdHtml()}
+
       <!-- Screenshots Carousel -->
       <div class="detail-screenshots-section">
         <h4><i class="fa-solid fa-images"></i> ${isUr ? 'ایپ کے اسکرین شاٹس' : 'Screenshots'}</h4>
@@ -639,6 +696,8 @@ const App = {
         <div class="detail-main-info">
           <h4><i class="fa-solid fa-align-right"></i> ${isUr ? 'مکمل تفصیل اور خصوصیات' : 'Description & Features'}</h4>
           <div class="detail-desc-text">${fullDesc}</div>
+
+          ${this.getMidContentAdHtml()}
 
           <h4 class="mt-4"><i class="fa-solid fa-wand-magic-sparkles"></i> ${isUr ? 'اس ورژن میں کیا نیا ہے؟' : 'What is New in this Version'}</h4>
           <div class="detail-changelog-box">${changelog.replace(/\n/g, '<br/>')}</div>
@@ -741,6 +800,10 @@ const App = {
 
         <div class="countdown-wrapper" id="download-countdown-text">
           ${window.i18n.t('download_countdown_prefix')} <strong id="cd-seconds">${countdown}</strong> ${window.i18n.t('download_seconds')}
+        </div>
+
+        <div style="margin: 0.85rem 0 0.4rem 0; padding: 0.65rem 0.85rem; border-radius: var(--radius-sm); background: rgba(0, 229, 255, 0.08); border: 1px solid rgba(0, 229, 255, 0.25); font-size: 0.85rem; color: #fff; text-align: center;">
+          <i class="fa-solid fa-shield-halved text-cyan"></i> ${isUr ? 'اپنی پسند کا ڈاؤن لوڈ سرور منتخب کریں:' : 'Select your preferred download server:'}
         </div>
 
         <div class="ready-actions" style="display: flex; flex-direction: column; gap: 0.75rem;">

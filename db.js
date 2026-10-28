@@ -209,10 +209,62 @@ function seedInitialData() {
     console.log('✔ Default Categories seeded');
   }
 
-  // 3. Apps: Clean and ready for real apps published by admin
+  // 3. Apps: Real Published Apps (یہاں اپنی ایپس اور ڈاؤن لوڈ لنکس شامل کریں)
   try {
     db.exec("DELETE FROM apps WHERE download_url LIKE '%Sample%' OR download_url LIKE '%sample%'");
   } catch (e) {}
+
+  const realApps = [
+    {
+      slug: 'capcut-pro',
+      name_en: 'CapCut Pro',
+      name_ur: 'کیپ کٹ پرو (ویڈیو ایڈیٹر)',
+      category_slug: 'media',
+      version: 'v12.5.0',
+      size_mb: 85.0,
+      package_name: 'com.lemon.lvoverseas',
+      min_android: 'Android 8.0+',
+      icon_url: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=160&auto=format&fit=crop&q=80',
+      banner_url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80',
+      short_desc_en: 'CapCut Pro Mod APK with all premium unlocked features, transitions, and no watermark.',
+      short_desc_ur: 'کیپ کٹ پرو: بغیر واٹر مارک تمام پریمیم فیچرز، 4K ویڈیو ایکسپورٹ اور فلٹرز کے ساتھ۔',
+      full_desc_en: 'CapCut Pro is the best video editor for Android with unlocked pro filters, smooth transitions, and high quality 60fps export.',
+      full_desc_ur: 'کیپ کٹ پرو اینڈرائڈ کا جدید ترین ویڈیو ایڈیٹر ہے۔ اس میں تمام پریمیم ٹرانزیشنز، فلٹرز اور نو واٹر مارک شامل ہیں۔',
+      changelog_en: '• All VIP filters & effects unlocked\n• No watermark\n• 4K 60FPS export',
+      changelog_ur: '• تمام پریمیم فلٹرز اور ایفیکٹس ان لاکڈ\n• بغیر واٹر مارک کے ایکسپورٹ\n• 4K 60FPS سپورٹ',
+      download_url: 'https://drive.google.com/uc?export=download&id=YOUR_CAPCUT_LINK_HERE', // <<< اپنا کیپ کٹ کا ڈاؤن لوڈ لنک یہاں پیسٹ کریں
+      mirror_url: '',
+      sha256: 'capcut_pro_verified_clean',
+      is_featured: 1,
+      is_popular: 1,
+      is_new: 1,
+      is_published: 1
+    }
+  ];
+
+  for (const app of realApps) {
+    const existing = db.prepare('SELECT id FROM apps WHERE slug = ?').get(app.slug);
+    if (!existing) {
+      db.prepare(`
+        INSERT INTO apps (
+          slug, name_en, name_ur, category_slug, version, size_mb, package_name, min_android,
+          icon_url, banner_url, screenshots, short_desc_en, short_desc_ur,
+          full_desc_en, full_desc_ur, changelog_en, changelog_ur,
+          download_url, mirror_url, sha256, is_featured, is_popular, is_new, is_published
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `).run(
+        app.slug, app.name_en, app.name_ur, app.category_slug, app.version, app.size_mb,
+        app.package_name, app.min_android, app.icon_url, app.banner_url, '[]',
+        app.short_desc_en, app.short_desc_ur, app.full_desc_en, app.full_desc_ur,
+        app.changelog_en, app.changelog_ur, app.download_url, app.mirror_url,
+        app.sha256, app.is_featured, app.is_popular, app.is_new, app.is_published
+      );
+    } else {
+      db.prepare('UPDATE apps SET download_url = ?, version = ?, size_mb = ? WHERE id = ?').run(
+        app.download_url, app.version, app.size_mb, existing.id
+      );
+    }
+  }
 
   // 4. Seed Files & PDFs
   const checkFiles = db.prepare('SELECT COUNT(*) as count FROM files').get();

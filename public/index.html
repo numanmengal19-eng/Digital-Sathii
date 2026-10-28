@@ -42,7 +42,6 @@
             if (data && Array.isArray(data.apps)) {
               data.apps = data.apps.filter(function(a) {
                 if (!a) return false;
-                if (a.id && Number(a.id) <= 8) return false;
                 if (a.download_url && (a.download_url.includes('Sample') || a.download_url.includes('sample'))) return false;
                 return true;
               });

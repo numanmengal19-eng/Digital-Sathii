@@ -693,42 +693,22 @@ const AdminApp = {
       const url = editId ? `/api/admin/apps/${editId}` : '/api/admin/apps';
       const method = editId ? 'PUT' : 'POST';
 
-      let serverData = {};
-      try {
-        const res = await fetch(url, {
-          method,
-          headers: this.getHeaders(),
-          body: JSON.stringify(payload)
-        });
-        serverData = await res.json();
-      } catch (e) {
-        console.warn('API sync warning:', e);
+      const res = await fetch(url, {
+        method,
+        headers: this.getHeaders(),
+        body: JSON.stringify(payload)
+      });
+      const serverData = await res.json();
+      if (!res.ok) {
+        throw new Error(serverData.error || 'ایپ سرور پر محفوظ نہیں ہو سکی');
       }
 
-      // Persist in localStorage so it appears immediately on the website
+      // Clear local storage cache so clean cloud data is loaded
       try {
-        const localCustom = JSON.parse(localStorage.getItem('sathi_custom_apps') || '[]');
-        const appId = editId || serverData.id || Date.now();
-        const appObj = {
-          id: appId,
-          ...payload,
-          rating: 5.0,
-          rating_count: 1,
-          downloads_count: 50,
-          created_at: new Date().toISOString()
-        };
-        const idx = localCustom.findIndex(a => a.id == appId || a.name_en === payload.name_en);
-        if (idx >= 0) {
-          localCustom[idx] = { ...localCustom[idx], ...appObj };
-        } else {
-          localCustom.unshift(appObj);
-        }
-        localStorage.setItem('sathi_custom_apps', JSON.stringify(localCustom));
-      } catch (e) {
-        console.warn('Error saving to localStorage:', e);
-      }
+        localStorage.removeItem('sathi_custom_apps');
+      } catch (e) {}
 
-      alert('شاباش! ایپ کامیابی سے شائع ہو گئی اور ویب سائٹ پر شامل ہو گئی ہے!');
+      alert('شاباش! ایپ کامیابی سے کلاؤڈ ڈیٹا بیس میں محفوظ ہو گئی ہے اور اب تمام صارفین کو لائیو نظر آئے گی!');
       this.closeModal();
       this.renderAppsTab(document.getElementById('admin-tab-content'));
     } catch (err) {

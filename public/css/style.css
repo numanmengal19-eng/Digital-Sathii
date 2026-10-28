@@ -825,6 +825,48 @@ html[dir="rtl"] .stat-item:not(:last-child)::after { left: -0.75rem; }
   flex: 1;
 }
 
+.btn-share-icon {
+  background: rgba(0, 229, 255, 0.08);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.75rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.btn-share-icon:hover {
+  background: var(--accent-cyan);
+  color: #070F2B;
+  box-shadow: 0 0 14px rgba(0, 229, 255, 0.45);
+  transform: translateY(-2px);
+}
+
+.btn-whatsapp-direct:hover {
+  background: #1ebd59 !important;
+  box-shadow: 0 0 15px rgba(37, 211, 102, 0.45);
+  transform: translateY(-2px);
+}
+
+.highlight-pulse {
+  animation: sathiPulseHighlight 1.5s ease-in-out infinite;
+}
+
+@keyframes sathiPulseHighlight {
+  0%, 100% {
+    border-color: var(--border-subtle);
+    box-shadow: none;
+  }
+  50% {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 25px rgba(0, 229, 255, 0.5);
+  }
+}
+
 /* =========================================================================
    App Store Filtering Toolbar
    ========================================================================= */

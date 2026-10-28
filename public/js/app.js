@@ -180,7 +180,10 @@ const App = {
     // 4. Load Remote Data
     await this.loadPlatformData();
 
-    // 4. Bind Events & Route checks
+    // 5. Check Deep Link (?app=slug or #app-slug)
+    this.checkDeepLink();
+
+    // 6. Bind Events & Route checks
     this.bindEvents();
     this.handleRouting();
     window.addEventListener('hashchange', () => this.handleRouting());
@@ -379,8 +382,11 @@ const App = {
           <button class="btn btn-primary btn-sm btn-download" onclick="App.startDownloadFlow(${app.id})">
             <i class="fa-solid fa-download"></i> <span>${window.i18n.t('btn_download_apk')}</span>
           </button>
-          <button class="btn btn-secondary btn-sm" onclick="App.openAppDetails(${app.id})">
+          <button class="btn btn-secondary btn-sm" onclick="App.openAppDetails(${app.id})" title="${isUr ? 'معلومات و تفصیلات' : 'Details'}">
             <i class="fa-solid fa-circle-info"></i>
+          </button>
+          <button class="btn btn-share-icon btn-sm" onclick="App.shareAppLink(${app.id}, event)" title="${isUr ? 'ایپ کا لنک کاپی / شیئر کریں' : 'Copy / Share Link'}">
+            <i class="fa-solid fa-share-nodes"></i>
           </button>
         </div>
       </div>
@@ -573,9 +579,15 @@ const App = {
             </div>
           </div>
         </div>
-        <div class="detail-header-download-action">
+        <div class="detail-header-download-action" style="display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center;">
           <button class="btn btn-primary btn-lg" onclick="App.startDownloadFlow(${app.id})">
             <i class="fa-solid fa-download"></i> ${window.i18n.t('btn_download_apk')} (${app.size_mb} MB)
+          </button>
+          <button class="btn btn-outline-cyan btn-lg" onclick="App.copyAppLinkOnly(${app.id}, event)" style="border-radius: var(--radius-md); padding: 0.65rem 1.15rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem;" title="${isUr ? 'اس ایپ کا ویب سائٹ لنک کاپی کریں' : 'Copy App Link'}">
+            <i class="fa-solid fa-link"></i> <span>${isUr ? 'کاپی لنک' : 'Copy Link'}</span>
+          </button>
+          <button class="btn btn-whatsapp-direct btn-lg" onclick="App.shareToWhatsApp(${app.id}, event)" style="background: #25D366; color: #ffffff; border: none; border-radius: var(--radius-md); padding: 0.65rem 1.15rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none;" title="${isUr ? 'واٹس ایپ گروپس میں شیئر کریں' : 'Share to WhatsApp'}">
+            <i class="fa-brands fa-whatsapp" style="font-size: 1.25rem;"></i> <span>${isUr ? 'واٹس ایپ شیئر' : 'WhatsApp'}</span>
           </button>
         </div>
       </div>
@@ -908,6 +920,138 @@ const App = {
       const activeNav = document.querySelector(`.mobile-nav-item[href="${hash || '#home'}"]`);
       if (activeNav) activeNav.classList.add('active');
     }
+  },
+
+  checkDeepLink() {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const hash = (window.location.hash || '').toLowerCase();
+      let appParam = urlParams.get('app');
+      if (!appParam && hash.startsWith('#app-')) {
+        appParam = hash.replace('#app-', '');
+      }
+
+      if (appParam && this.apps && this.apps.length > 0) {
+        const p = appParam.toLowerCase();
+        const found = this.apps.find(a => 
+          (a.slug && a.slug.toLowerCase() === p) || 
+          String(a.id) === String(appParam) ||
+          (a.name_en && a.name_en.toLowerCase().replace(/[^a-z0-9]+/g, '-') === p)
+        );
+
+        if (found) {
+          setTimeout(() => {
+            this.openAppDetails(found.id);
+            const cardEl = document.querySelector(`[data-app-id="${found.id}"]`);
+            if (cardEl) {
+              cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              cardEl.classList.add('highlight-pulse');
+            }
+          }, 350);
+        }
+      }
+    } catch (e) {
+      console.warn('Deep link error:', e);
+    }
+  },
+
+  shareAppLink(appId, event) {
+    if (event) event.stopPropagation();
+    const app = this.apps.find(a => a.id === appId);
+    if (!app) return;
+
+    const isUr = window.i18n && window.i18n.isUrdu();
+    const name = isUr ? app.name_ur : app.name_en;
+    const appSlug = app.slug || app.name_en.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const shareUrl = `${window.location.origin}/?app=${encodeURIComponent(appSlug)}`;
+    const shareTitle = `${name} — ڈیجیٹل ساتھی (Digital Sathi)`;
+    const shareText = `📲 ${name} (${app.version}) اب ڈیجیٹل ساتھی پر 100% تصدیق شدہ اور محفوظ ڈاؤن لوڈ کے لیے دستیاب ہے!\n\nڈاؤن لوڈ کرنے کے لیے نیچے دیے گئے لنک پر کلک کریں:\n${shareUrl}`;
+
+    if (navigator.share && window.innerWidth < 768) {
+      navigator.share({
+        title: shareTitle,
+        text: shareText,
+        url: shareUrl
+      }).catch(() => {
+        this.copyToClipboard(shareUrl, isUr);
+      });
+    } else {
+      this.copyToClipboard(shareUrl, isUr);
+    }
+  },
+
+  copyAppLinkOnly(appId, event) {
+    if (event) event.stopPropagation();
+    const app = this.apps.find(a => a.id === appId);
+    if (!app) return;
+
+    const isUr = window.i18n && window.i18n.isUrdu();
+    const appSlug = app.slug || app.name_en.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const shareUrl = `${window.location.origin}/?app=${encodeURIComponent(appSlug)}`;
+    this.copyToClipboard(shareUrl, isUr);
+  },
+
+  shareToWhatsApp(appId, event) {
+    if (event) event.stopPropagation();
+    const app = this.apps.find(a => a.id === appId);
+    if (!app) return;
+
+    const isUr = window.i18n && window.i18n.isUrdu();
+    const name = isUr ? app.name_ur : app.name_en;
+    const appSlug = app.slug || app.name_en.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const shareUrl = `${window.location.origin}/?app=${encodeURIComponent(appSlug)}`;
+    const text = `📲 *${name}* (${app.version})\nڈیجیٹل ساتھی پر 100% تصدیق شدہ اور وائرس فری ڈاؤن لوڈ کے لیے دستیاب ہے!\n\nڈاؤن لوڈ کرنے کے لیے یہاں کلک کریں 👇\n${shareUrl}`;
+    
+    const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+    window.open(waUrl, '_blank');
+  },
+
+  copyToClipboard(text, isUr) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        this.showToast(isUr ? '✅ ایپ کا لنک کاپی ہو گیا ہے! اب واٹس ایپ یا گروپس میں شیئر کریں۔' : '✅ App link copied! Share it on WhatsApp or groups.');
+      }).catch(() => {
+        this.fallbackCopy(text, isUr);
+      });
+    } else {
+      this.fallbackCopy(text, isUr);
+    }
+  },
+
+  fallbackCopy(text, isUr) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand('copy');
+      this.showToast(isUr ? '✅ ایپ کا لنک کاپی ہو گیا ہے! اب واٹس ایپ یا گروپس میں شیئر کریں۔' : '✅ App link copied!');
+    } catch (e) {
+      prompt(isUr ? 'لنک کاپی کریں:' : 'Copy link:', text);
+    }
+    document.body.removeChild(ta);
+  },
+
+  showToast(message) {
+    let toast = document.getElementById('sathi-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'sathi-toast';
+      toast.style.cssText = 'position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #070F2B; color: #00E5FF; border: 1.5px solid #00E5FF; padding: 14px 26px; border-radius: 40px; font-weight: 700; font-size: 1rem; z-index: 9999999; box-shadow: 0 10px 35px rgba(0,229,255,0.45); transition: opacity 0.3s ease, transform 0.3s ease; text-align: center; max-width: 90%; pointer-events: none; direction: rtl;';
+      document.body.appendChild(toast);
+    }
+    toast.innerText = message;
+    toast.style.display = 'block';
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateX(-50%) translateY(0)';
+    clearTimeout(this._toastTimer);
+    this._toastTimer = setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(-50%) translateY(10px)';
+      setTimeout(() => { toast.style.display = 'none'; }, 350);
+    }, 3500);
   },
 
   renderAll() {

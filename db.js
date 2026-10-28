@@ -232,7 +232,7 @@ function seedInitialData() {
       full_desc_ur: 'کیپ کٹ پرو اینڈرائڈ کا جدید ترین ویڈیو ایڈیٹر ہے۔ اس میں تمام پریمیم ٹرانزیشنز، فلٹرز اور نو واٹر مارک شامل ہیں۔',
       changelog_en: '• All VIP filters & effects unlocked\n• No watermark\n• 4K 60FPS export',
       changelog_ur: '• تمام پریمیم فلٹرز اور ایفیکٹس ان لاکڈ\n• بغیر واٹر مارک کے ایکسپورٹ\n• 4K 60FPS سپورٹ',
-      download_url: 'https://drive.google.com/uc?export=download&id=YOUR_CAPCUT_LINK_HERE', // <<< اپنا کیپ کٹ کا ڈاؤن لوڈ لنک یہاں پیسٹ کریں
+      download_url: 'https://www.mediafire.com/file/ijetq11ydbbjchx/Capcut_Pro.zip/file',
       mirror_url: '',
       sha256: 'capcut_pro_verified_clean',
       is_featured: 1,

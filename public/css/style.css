@@ -2584,31 +2584,113 @@ body {
   cursor: pointer; /* Ensures iOS Safari dispatches touch clicks across all elements */
 }
 
+/* Sponsored Banner Card & Native Ads */
+.sponsored-banner-card {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+  border: 1.5px solid rgba(0, 229, 255, 0.35);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 8px 25px rgba(0, 229, 255, 0.12);
+  margin-bottom: 1.5rem;
+}
+
+.sponsored-banner-card:hover {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 10px 35px rgba(0, 229, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.sponsored-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(245, 158, 11, 0.18);
+  color: #F59E0B;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  border-radius: 20px;
+  margin-bottom: 0.35rem;
+}
+
+.sponsored-banner-heading {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+}
+
+.sponsored-banner-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.btn-sponsored-cta {
+  background: linear-gradient(135deg, #00E5FF, #3B82F6);
+  color: #070F2B;
+  font-weight: 800;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1.35rem;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  box-shadow: 0 4px 15px rgba(0, 229, 255, 0.35);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-sponsored-cta:hover {
+  transform: scale(1.04);
+  box-shadow: 0 6px 20px rgba(0, 229, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+  .sponsored-banner-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+    gap: 1rem;
+  }
+  .btn-sponsored-cta {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Floating Social Bar (Guaranteed visibility on mobile and desktop) */
 .sathi-social-bar {
   position: fixed;
-  bottom: 76px; /* Positioned directly above bottom mobile navigation bar */
+  bottom: 80px;
   left: 12px;
   right: 12px;
-  z-index: 99999;
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.96) 0%, rgba(30, 41, 59, 0.98) 100%);
-  border: 1.5px solid rgba(0, 229, 255, 0.45);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 16px rgba(0, 229, 255, 0.25);
+  z-index: 9999999 !important;
+  background: linear-gradient(135deg, #070F2B 0%, #0F172A 100%);
+  border: 1.5px solid var(--accent-cyan);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.75), 0 0 20px rgba(0, 229, 255, 0.35);
   border-radius: 14px;
-  padding: 10px 14px;
-  display: flex;
+  padding: 12px 14px;
+  display: flex !important;
   align-items: center;
   gap: 12px;
   cursor: pointer;
-  animation: socialBarSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both;
+  animation: socialBarSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
 
 @media (min-width: 769px) {
   .sathi-social-bar {
-    max-width: 380px;
+    max-width: 400px;
     left: auto;
-    right: 20px;
+    right: 24px;
     bottom: 24px;
   }
 }

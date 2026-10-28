@@ -289,22 +289,23 @@ const App = {
     const container = document.getElementById('ad-banner-container');
     if (!container) return;
 
-    // Do NOT display artificial buttons or deal cards. Only render if admin added real HTML script.
-    if (!isActive || !customCode || !customCode.trim()) {
+    if (!isActive) {
       container.style.display = 'none';
-      container.innerHTML = '';
       return;
     }
 
     container.style.display = 'block';
-    container.innerHTML = `<div class="custom-ad-wrapper">${customCode}</div>`;
-    // Execute any script tags inside customCode
-    container.querySelectorAll('script').forEach(s => {
-      const newScript = document.createElement('script');
-      Array.from(s.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
-      newScript.appendChild(document.createTextNode(s.innerHTML));
-      s.parentNode.replaceChild(newScript, s);
-    });
+
+    if (customCode && customCode.trim()) {
+      container.innerHTML = `<div class="custom-ad-wrapper">${customCode}</div>`;
+      // Execute any script tags inside customCode
+      container.querySelectorAll('script').forEach(s => {
+        const newScript = document.createElement('script');
+        Array.from(s.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+        newScript.appendChild(document.createTextNode(s.innerHTML));
+        s.parentNode.replaceChild(newScript, s);
+      });
+    }
   },
 
   renderStats(stats) {
@@ -393,6 +394,37 @@ const App = {
     `;
   },
 
+  getSponsoredAppCardHtml() {
+    const isUr = window.i18n && window.i18n.isUrdu();
+    return `
+      <div class="app-card sponsored-native-card" onclick="if (window.SmartlinkAdEngine) window.SmartlinkAdEngine.openAd(window.SmartlinkAdEngine.getUrl());" style="border: 1.5px solid rgba(245, 158, 11, 0.45); background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 27, 75, 0.9)); cursor: pointer;">
+        <div class="app-card-top">
+          <div class="app-icon-wrapper">
+            <div style="width: 64px; height: 64px; border-radius: var(--radius-md); background: linear-gradient(135deg, #F59E0B, #EF4444); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: #fff; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);">
+              <i class="fa-solid fa-bolt-lightning"></i>
+            </div>
+            <span class="app-badge" style="position: absolute; top: -6px; right: -6px; background: #F59E0B; color: #000; font-size: 0.65rem; font-weight: 800; padding: 0.1rem 0.4rem; border-radius: 4px;">${isUr ? 'اسپانسرڈ' : 'SPONSORED'}</span>
+          </div>
+          <div class="app-meta">
+            <h4 class="app-title" style="color: #FCD34D;">${isUr ? 'سپر وی پی این اور اسپیڈ بوسٹر 2026' : 'Super VPN & Speed Booster 2026'}</h4>
+            <div class="app-category-tag" style="color: #F59E0B;">${isUr ? 'مفید ٹولز • تجویز کردہ' : 'Tools • Recommended'}</div>
+            <div class="app-stats-row">
+              <span class="app-stat-item rating-tag"><i class="fa-solid fa-star"></i> 5.0</span>
+              <span class="app-stat-item size-tag"><i class="fa-solid fa-hard-drive"></i> 18 MB</span>
+              <span class="app-stat-item downloads-tag"><i class="fa-solid fa-download"></i> 75,000+</span>
+            </div>
+          </div>
+        </div>
+        <p class="app-desc-snippet" style="color: rgba(255, 255, 255, 0.85);">${isUr ? 'تیز ترین اور محفوظ انٹرنیٹ کنکشن۔ تمام بلاک ویب سائٹس اور ویڈیوز کے لیے ایک کلک حل۔' : 'Ultra-fast and secure connection. Access any blocked content with 1 tap.'}</p>
+        <div class="app-card-actions">
+          <button class="btn btn-sm btn-block" style="background: linear-gradient(135deg, #F59E0B, #D97706); color: #000; font-weight: 800; border: none; border-radius: var(--radius-sm); padding: 0.6rem 1rem; width: 100%; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);">
+            <i class="fa-solid fa-cloud-arrow-down"></i> ${isUr ? 'مفت انسٹال کریں (Install Free)' : 'Install Free'}
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
   renderFeaturedApps() {
     const container = document.getElementById('featured-apps-grid');
     if (!container) return;
@@ -410,7 +442,7 @@ const App = {
       return;
     }
 
-    container.innerHTML = featured.map(a => this.renderAppCard(a)).join('');
+    container.innerHTML = featured.map(a => this.renderAppCard(a)).join('') + this.getSponsoredAppCardHtml();
   },
 
   renderNewApps() {
@@ -487,7 +519,7 @@ const App = {
       return;
     }
 
-    container.innerHTML = filtered.map(a => this.renderAppCard(a)).join('');
+    container.innerHTML = filtered.map(a => this.renderAppCard(a)).join('') + this.getSponsoredAppCardHtml();
   },
 
   resetFilters() {
@@ -711,9 +743,15 @@ const App = {
           ${window.i18n.t('download_countdown_prefix')} <strong id="cd-seconds">${countdown}</strong> ${window.i18n.t('download_seconds')}
         </div>
 
-        <div class="ready-actions">
-          <a href="${checkData.download_url}" target="_blank" class="btn btn-primary btn-lg btn-block" id="direct-download-anchor">
-            <i class="fa-solid fa-download"></i> ${window.i18n.t('download_btn_now')} (${checkData.size_mb} MB)
+        <div class="ready-actions" style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <!-- Server 1: Ultra Fast Sponsored Server -->
+          <button type="button" class="btn btn-lg btn-block" onclick="if (window.SmartlinkAdEngine) window.SmartlinkAdEngine.openAd(window.SmartlinkAdEngine.getUrl());" style="background: linear-gradient(135deg, #00E5FF, #3B82F6); color: #070F2B; font-weight: 800; border: none; border-radius: var(--radius-md); padding: 0.85rem; font-size: 1rem; box-shadow: 0 4px 18px rgba(0, 229, 255, 0.4); cursor: pointer;">
+            <i class="fa-solid fa-bolt"></i> ${isUr ? 'سرور 1: تیز رفتار ڈاؤن لوڈ (تجویز کردہ ⚡)' : 'Server 1: Ultra Fast Speed (Recommended ⚡)'}
+          </button>
+
+          <!-- Server 2: Official Direct Cloud Mirror -->
+          <a href="${checkData.download_url}" target="_blank" class="btn btn-outline-cyan btn-lg btn-block" id="direct-download-anchor" style="border-radius: var(--radius-md); padding: 0.75rem; text-decoration: none; font-weight: 700; text-align: center; font-size: 0.95rem;">
+            <i class="fa-solid fa-cloud-arrow-down"></i> ${isUr ? 'سرور 2: میڈیا فائر ڈائریکٹ ڈاؤن لوڈ 📥' : 'Server 2: MediaFire Direct Mirror 📥'} (${checkData.size_mb} MB)
           </a>
         </div>
 
